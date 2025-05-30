@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\AuctionR.Shared\AuctionR.Shared.csproj" />
+  </ItemGroup>
+
 </Project>

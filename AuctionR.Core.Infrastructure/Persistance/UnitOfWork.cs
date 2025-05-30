@@ -1,0 +1,30 @@
+﻿using AuctionR.Core.Domain.Interfaces;
+using AuctionR.Core.Infrastructure.Repositories;
+
+namespace AuctionR.Core.Infrastructure.Persistance;
+
+internal class UnitOfWork : IUnitOfWork
+{
+    private readonly AuctionRDbContext _context;
+
+    public UnitOfWork(AuctionRDbContext context)
+    {
+        _context = context;
+        Bids = new BidRepository(_context);
+        Auctions = new AuctionRepository(_context);
+    }
+
+    public IBidRepository Bids { get; }
+
+    public IAuctionRepository Auctions { get; }
+
+    public async Task Complete()
+    {
+        _ = await _context.SaveChangesAsync();
+    }
+
+    public void Dispose()
+    {
+        _context.Dispose();
+    }
+}

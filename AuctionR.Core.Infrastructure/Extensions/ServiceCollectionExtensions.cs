@@ -1,4 +1,5 @@
-﻿using AuctionR.Core.Infrastructure.Persistance;
+﻿using AuctionR.Core.Domain.Interfaces;
+using AuctionR.Core.Infrastructure.Persistance;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,5 +13,7 @@ public static class ServiceCollectionExtensions
         services.AddDbContext<AuctionRDbContext>(options =>
             options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"))
         );
+
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
     }
 }
