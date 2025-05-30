@@ -1,0 +1,6 @@
+@AuctionR.Core.API_HostAddress = http://localhost:5264
+
+GET {{AuctionR.Core.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
