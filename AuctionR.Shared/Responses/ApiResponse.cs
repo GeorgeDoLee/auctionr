@@ -5,6 +5,6 @@ public record ApiResponse<T>(bool Success, string? Message = null, T? Data = def
     public static ApiResponse<T> SuccessResponse(T data, string? message = null) =>
         new(true, message, data);
 
-    public static ApiResponse<T> FailResponse(string message) =>
-        new(false, message);
+    public static ApiResponse<T> FailResponse(string message, T? data = default) =>
+        new(false, message, data);
 }
