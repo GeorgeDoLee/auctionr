@@ -29,7 +29,7 @@ public class CreateAuctionCommandHandler
         var newAuction = command.Adapt<Auction>();
 
         await _unitOfWork.Auctions.AddAsync(newAuction, ct);
-        await _unitOfWork.Complete();
+        await _unitOfWork.Complete(ct);
 
         return newAuction.Adapt<AuctionModel>();
     }

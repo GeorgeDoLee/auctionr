@@ -6,5 +6,5 @@ public interface IUnitOfWork : IDisposable
 
     IAuctionRepository Auctions { get; }
     
-    Task Complete(CancellationToken ct);
+    Task Complete(CancellationToken ct = default);
 }
