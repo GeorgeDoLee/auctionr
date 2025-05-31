@@ -1,4 +1,6 @@
 ﻿using AuctionR.Core.Application.Commands.Auctions.Create;
+using AuctionR.Core.Application.Models;
+using AuctionR.Core.Application.Queries.Auctions.Get;
 using AuctionR.Shared.Responses;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -24,7 +26,18 @@ public class AuctionsController : ControllerBase
     public async Task<IActionResult> GetAuctionByIdAsync(
         [FromRoute] int id, CancellationToken ct)
     {
-        throw new NotImplementedException();
+        var query = new GetAuctionQuery(id);
+
+        var response = await _mediator.Send(query);
+        
+        if (response == null)
+        {
+            return NotFound(ApiResponse<string>
+                .FailResponse($"Product with id: {id} could not be found."));
+        }
+
+        return Ok(ApiResponse<AuctionModel>
+            .SuccessResponse(response, $"Product with id: {id} fetched successfully."));
     }
 
     [HttpPost]
