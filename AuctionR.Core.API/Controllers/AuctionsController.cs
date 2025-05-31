@@ -30,12 +30,6 @@ public class AuctionsController : ControllerBase
 
         var response = await _mediator.Send(query);
         
-        if (response == null)
-        {
-            return NotFound(ApiResponse<string>
-                .FailResponse($"Product with id: {id} could not be found."));
-        }
-
         return Ok(ApiResponse<AuctionModel>
             .SuccessResponse(response, $"Product with id: {id} fetched successfully."));
     }

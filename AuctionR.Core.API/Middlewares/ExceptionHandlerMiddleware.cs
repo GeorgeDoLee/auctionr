@@ -1,4 +1,5 @@
-﻿using AuctionR.Shared.Responses;
+﻿using AuctionR.Core.Domain.Exceptions;
+using AuctionR.Shared.Responses;
 using FluentValidation;
 
 namespace AuctionR.Core.API.Middlewares;
@@ -22,7 +23,7 @@ public class ErrorHandlerMiddleware
         }
         catch (ValidationException ex)
         {
-            _logger.LogWarning("Validation failed: {Errors}", ex.Errors);
+            _logger.LogWarning(ex, "Validation failed: {Errors}", ex.Errors);
 
             context.Response.StatusCode = StatusCodes.Status400BadRequest;
             context.Response.ContentType = "application/json";
@@ -34,7 +35,18 @@ public class ErrorHandlerMiddleware
             });
 
             await context.Response.WriteAsJsonAsync(
-                ApiResponse<IEnumerable<object>>.FailResponse("Validation failed.", errors));
+                ApiResponse<object>.FailResponse("Validation failed.", new { ValidationErrors = errors }));
+        }
+        catch (NotFoundException ex)
+        {
+            _logger.LogWarning(ex, "Not found: {Message}", ex.Message);
+
+            context.Response.StatusCode = StatusCodes.Status404NotFound;
+            context.Response.ContentType = "application/json";
+
+            await context.Response.WriteAsJsonAsync(
+                ApiResponse<string>.FailResponse(ex.Message)
+            );
         }
         catch (Exception ex)
         {
