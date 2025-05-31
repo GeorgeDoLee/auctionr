@@ -1,4 +1,5 @@
 using AuctionR.Core.API.Extensions;
+using AuctionR.Core.API.Middlewares;
 using AuctionR.Core.Application.Extensions;
 using AuctionR.Core.Infrastructure.Extensions;
 
@@ -15,6 +16,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseMiddleware<ErrorHandlerMiddleware>();
 
 app.UseHttpsRedirection();
 
