@@ -21,9 +21,10 @@ public class AuctionsController : ControllerBase
 
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetAllAuctionsAsync(CancellationToken ct)
+    public async Task<IActionResult> GetAllAuctionsAsync(
+        [FromQuery] GetAllAuctionsQuery query, CancellationToken ct)
     {
-        var response = await _mediator.Send(new GetAllAuctionsQuery(), ct);
+        var response = await _mediator.Send(query, ct);
 
         return Ok(ApiResponse<IEnumerable<AuctionModel>>
             .SuccessResponse(response, "All auctions fetched successfully"));

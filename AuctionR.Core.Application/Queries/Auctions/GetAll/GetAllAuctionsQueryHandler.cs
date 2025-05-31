@@ -1,7 +1,10 @@
 ﻿using AuctionR.Core.Application.Models;
+using AuctionR.Core.Domain.Entities;
 using AuctionR.Core.Domain.Interfaces;
 using Mapster;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace AuctionR.Core.Application.Queries.Auctions.GetAll;
 
@@ -16,9 +19,11 @@ public class GetAllAuctionsQueryHandler :
     }
 
     public async Task<IEnumerable<AuctionModel>> Handle(
-        GetAllAuctionsQuery request, CancellationToken ct)
+        GetAllAuctionsQuery query, CancellationToken ct)
     {
-        var auctions = await _unitOfWork.Auctions.GetAllAsync();
+
+        var auctions = await _unitOfWork.Auctions
+            .GetAllAsync(query.PageNumber, query.PageSize, ct);
 
         return auctions.Adapt<List<AuctionModel>>();
     }
