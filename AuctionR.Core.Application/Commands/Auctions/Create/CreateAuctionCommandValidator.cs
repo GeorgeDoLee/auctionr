@@ -21,8 +21,6 @@ public class CreateAuctionCommandValidator : AbstractValidator<CreateAuctionComm
 
         RuleFor(x => x.EndTime)
             .NotEmpty().WithMessage("End time is required.")
-            .Must(end => end > DateTime.UtcNow)
-            .WithMessage("End time must be in the future.")
             .Must((cmd, end) => end > cmd.StartTime)
             .WithMessage("End time must be after start time.");
     }
