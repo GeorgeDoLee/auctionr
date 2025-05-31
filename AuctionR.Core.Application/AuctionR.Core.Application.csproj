@@ -16,8 +16,4 @@
     <ProjectReference Include="..\AuctionR.Core.Infrastructure\AuctionR.Core.Infrastructure.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Queries\Auctions\" />
-  </ItemGroup>
-
 </Project>
