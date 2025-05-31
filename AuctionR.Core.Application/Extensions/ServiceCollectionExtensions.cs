@@ -1,6 +1,7 @@
-﻿using FluentValidation;
-using FluentValidation.AspNetCore;
+﻿using AuctionR.Core.Application.Common.Behavior;
+using FluentValidation;
 using Mapster;
+using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace AuctionR.Core.Application.Extensions;
@@ -16,8 +17,9 @@ public static class ServiceCollectionExtensions
             config.RegisterServicesFromAssembly(appAssambly);
         });
 
-        services.AddValidatorsFromAssembly(appAssambly)
-            .AddFluentValidationAutoValidation();
+        services.AddValidatorsFromAssembly(appAssambly);
+
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
         TypeAdapterConfig.GlobalSettings
             .Scan(typeof(ServiceCollectionExtensions).Assembly);
