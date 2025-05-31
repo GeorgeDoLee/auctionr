@@ -35,6 +35,12 @@ public class Repository<TContext, TEntity> : IRepository<TEntity>
             .FindAsync(id, ct);
     }
 
+    public virtual async Task<IEnumerable<TEntity>> GetAllAsync()
+    {
+        return await _context.Set<TEntity>()
+            .ToListAsync();
+    }
+
     public void Remove(TEntity entity)
     {
         _context.Set<TEntity>()

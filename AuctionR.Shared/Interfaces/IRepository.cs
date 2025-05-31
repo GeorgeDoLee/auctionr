@@ -6,6 +6,8 @@ public interface IRepository<T>
 {
     Task<T?> GetAsync(int id, CancellationToken ct = default);
 
+    Task<IEnumerable<T>> GetAllAsync();
+
     Task<IEnumerable<T>> FindAsync(
         Expression<Func<T, bool>> predicate, CancellationToken ct = default);
 
