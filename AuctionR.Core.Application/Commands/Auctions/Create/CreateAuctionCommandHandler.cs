@@ -16,10 +16,10 @@ public class CreateAuctionCommandHandler
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<AuctionModel?> Handle(CreateAuctionCommand command, CancellationToken cancellationToken)
+    public async Task<AuctionModel?> Handle(CreateAuctionCommand command, CancellationToken ct)
     {
         var existingAuction = await _unitOfWork.Auctions
-            .FindAsync(a => a.ProductId == command.ProductId);
+            .FindAsync(a => a.ProductId == command.ProductId, ct);
 
         if (existingAuction.Any())
         {
@@ -28,7 +28,7 @@ public class CreateAuctionCommandHandler
 
         var newAuction = command.Adapt<Auction>();
 
-        await _unitOfWork.Auctions.AddAsync(newAuction);
+        await _unitOfWork.Auctions.AddAsync(newAuction, ct);
         await _unitOfWork.Complete();
 
         return newAuction.Adapt<AuctionModel>();

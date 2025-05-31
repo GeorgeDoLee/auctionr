@@ -18,9 +18,9 @@ internal class UnitOfWork : IUnitOfWork
 
     public IAuctionRepository Auctions { get; }
 
-    public async Task Complete()
+    public async Task Complete(CancellationToken ct = default)
     {
-        _ = await _context.SaveChangesAsync();
+        _ = await _context.SaveChangesAsync(ct);
     }
 
     public void Dispose()
