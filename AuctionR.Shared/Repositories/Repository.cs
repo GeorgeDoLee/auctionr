@@ -1,6 +1,8 @@
 ﻿using AuctionR.Shared.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using System.Linq.Expressions;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace AuctionR.Shared.Repositories;
 
@@ -15,30 +17,33 @@ public class Repository<TContext, TEntity> : IRepository<TEntity>
         _context = context;
     }
 
-    public async Task AddAsync(TEntity entity, CancellationToken ct)
+    public async Task AddAsync(TEntity entity, CancellationToken ct = default)
     {
         await _context.Set<TEntity>()
             .AddAsync(entity, ct);
     }
 
     public async Task<IEnumerable<TEntity>> FindAsync(
-        Expression<Func<TEntity, bool>> predicate, CancellationToken ct)
+        Expression<Func<TEntity, bool>> predicate, CancellationToken ct = default)
     {
         return await _context.Set<TEntity>()
             .Where(predicate)
             .ToListAsync(ct);
     }
 
-    public async Task<TEntity?> GetAsync(int id, CancellationToken ct)
+    public async Task<TEntity?> GetAsync(int id, CancellationToken ct = default)
     {
         return await _context.Set<TEntity>()
             .FindAsync(id, ct);
     }
 
-    public virtual async Task<IEnumerable<TEntity>> GetAllAsync()
+    public async Task<IEnumerable<TEntity>> GetAllAsync(
+        int pageNumber, int pageSize, CancellationToken ct = default)
     {
         return await _context.Set<TEntity>()
-            .ToListAsync();
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync(ct);
     }
 
     public void Remove(TEntity entity)
