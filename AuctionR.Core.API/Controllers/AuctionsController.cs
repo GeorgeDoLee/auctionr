@@ -1,4 +1,5 @@
 ﻿using AuctionR.Core.Application.Commands.Auctions.Create;
+using AuctionR.Core.Application.Commands.Auctions.Delete;
 using AuctionR.Core.Application.Models;
 using AuctionR.Core.Application.Queries.Auctions.Get;
 using AuctionR.Core.Application.Queries.Auctions.GetAll;
@@ -27,7 +28,7 @@ public class AuctionsController : ControllerBase
         var response = await _mediator.Send(query, ct);
 
         return Ok(ApiResponse<IEnumerable<AuctionModel>>
-            .SuccessResponse(response, "All auctions fetched successfully"));
+            .SuccessResponse("All auctions fetched successfully", response));
     }
 
     [HttpGet("{id}")]
@@ -43,7 +44,7 @@ public class AuctionsController : ControllerBase
         var response = await _mediator.Send(query);
         
         return Ok(ApiResponse<AuctionModel>
-            .SuccessResponse(response, $"Product with id: {id} fetched successfully."));
+            .SuccessResponse($"Product with id: {id} fetched successfully.", response));
     }
 
     [HttpPost]
@@ -64,5 +65,16 @@ public class AuctionsController : ControllerBase
                 nameof(GetAuctionByIdAsync),
                 new { id = response.Id },
                 response);
+    }
+
+    [HttpDelete("{id}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> DeleteAuctionAsync([FromRoute] int id, CancellationToken ct)
+    {
+        var response = await _mediator.Send(new DeleteAuctionCommand(id), ct);
+
+        return NoContent();
     }
 }
