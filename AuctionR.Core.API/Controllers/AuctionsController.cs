@@ -1,6 +1,7 @@
 ﻿using AuctionR.Core.Application.Commands.Auctions.Create;
 using AuctionR.Core.Application.Models;
 using AuctionR.Core.Application.Queries.Auctions.Get;
+using AuctionR.Core.Application.Queries.Auctions.GetAll;
 using AuctionR.Shared.Responses;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -16,6 +17,16 @@ public class AuctionsController : ControllerBase
     public AuctionsController(IMediator mediator)
     {
         _mediator = mediator;
+    }
+
+    [HttpGet]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetAllAuctionsAsync(CancellationToken ct)
+    {
+        var response = await _mediator.Send(new GetAllAuctionsQuery(), ct);
+
+        return Ok(ApiResponse<IEnumerable<AuctionModel>>
+            .SuccessResponse(response, "All auctions fetched successfully"));
     }
 
     [HttpGet("{id}")]
