@@ -1,4 +1,4 @@
-﻿using AuctionR.Core.Application.Models;
+﻿using AuctionR.Core.Application.Contracts.Models;
 using MediatR;
 
 namespace AuctionR.Core.Application.Queries.Auctions.Get;

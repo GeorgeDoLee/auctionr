@@ -1,4 +1,4 @@
-﻿using AuctionR.Core.Application.Models;
+﻿using AuctionR.Core.Application.Contracts.Models;
 using AuctionR.Core.Domain.Entities;
 using AuctionR.Core.Domain.Interfaces;
 using Mapster;
