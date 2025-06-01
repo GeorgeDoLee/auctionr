@@ -34,7 +34,6 @@ public class UpdateAuctionCommandValidator : AbstractValidator<UpdateAuctionComm
 
         RuleFor(x => x.HighestBidAmount)
             .GreaterThanOrEqualTo(x => x.StartingPrice)
-            .When(x => x.HighestBidAmount.HasValue)
             .WithMessage("Highest bid amount cannot be less than the starting price.");
 
         RuleFor(x => x.HighestBidderId)

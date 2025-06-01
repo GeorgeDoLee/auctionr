@@ -14,10 +14,10 @@ public class AuctionMappingConfig : IRegister
             .Map(dest => dest.StartingPrice, src => src.StartingPrice)
             .Map(dest => dest.StartTime, src => src.StartTime)
             .Map(dest => dest.EndTime, src => src.EndTime)
+            .Map(dest => dest.HighestBidAmount, src => src.StartingPrice)
             .Map(dest => dest.Status, _ => AuctionStatus.Pending)
             .Ignore(dest => dest.Id)
             .Ignore(dest => dest.Bids!)
-            .Ignore(dest => dest.HighestBidAmount!)
             .Ignore(dest => dest.HighestBidderId!);
     }
 }

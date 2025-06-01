@@ -34,7 +34,8 @@ public class PlaceBidCommandHandler : IRequestHandler<PlaceBidCommand, AuctionMo
             throw new InvalidOperationException("Auction is not currently active.");
         }
 
-        if (command.Amount < auction.HighestBidAmount + auction.MinimumBidIncrement)
+        if (auction.HighestBidderId != null && 
+            command.Amount < auction.HighestBidAmount + auction.MinimumBidIncrement)
         {
             throw new InvalidOperationException("Bid amount is too low.");
         }

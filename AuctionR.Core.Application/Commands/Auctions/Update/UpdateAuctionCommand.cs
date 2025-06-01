@@ -18,7 +18,7 @@ public class UpdateAuctionCommand : IRequest<bool>
 
     public DateTime EndTime { get; set; }
 
-    public decimal? HighestBidAmount { get; set; }
+    public decimal HighestBidAmount { get; set; }
 
     public int? HighestBidderId { get; set; }
 
