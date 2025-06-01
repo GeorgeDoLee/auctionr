@@ -5,7 +5,7 @@ using Mapster;
 
 namespace AuctionR.Core.Application.Mapping;
 
-public class MappingConfig : IRegister
+public class AuctionMappingConfig : IRegister
 {
     public void Register(TypeAdapterConfig config)
     {
