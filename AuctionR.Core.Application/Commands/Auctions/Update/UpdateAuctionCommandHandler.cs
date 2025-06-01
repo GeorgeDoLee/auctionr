@@ -24,7 +24,7 @@ public class UpdateAuctionCommandHandler : IRequestHandler<UpdateAuctionCommand,
         }
 
         command.Adapt(auction);
-        await _unitOfWork.Complete();
+        await _unitOfWork.Complete(ct);
 
         return true;
     }

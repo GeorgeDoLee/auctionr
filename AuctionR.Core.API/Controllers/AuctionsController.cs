@@ -42,10 +42,10 @@ public class AuctionsController : ControllerBase
     {
         var query = new GetAuctionQuery(id);
 
-        var response = await _mediator.Send(query);
+        var response = await _mediator.Send(query, ct);
         
         return Ok(ApiResponse<AuctionModel>
-            .SuccessResponse($"Product with id: {id} fetched successfully.", response));
+            .SuccessResponse($"Auction with id: {id} fetched successfully.", response));
     }
 
     [HttpPost]
@@ -54,18 +54,19 @@ public class AuctionsController : ControllerBase
     public async Task<IActionResult> AddAuctionAsync(
         [FromBody] CreateAuctionCommand command, CancellationToken ct)
     {
-        var response = await _mediator.Send(command);
+        var response = await _mediator.Send(command, ct);
 
         if (response == null)
         {
-            return BadRequest(ApiResponse<string>
+            return BadRequest(ApiResponse<object?>
                 .FailResponse("Auction with this product already exists. You can add another auction if you cancel existing one"));
         }
 
         return CreatedAtAction(
                 nameof(GetAuctionByIdAsync),
                 new { id = response.Id },
-                response);
+                ApiResponse<AuctionModel>.SuccessResponse("Auction Created successfully.", response)
+        );
     }
 
     [HttpPut]
