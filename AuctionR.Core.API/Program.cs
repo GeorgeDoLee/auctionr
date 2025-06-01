@@ -1,4 +1,5 @@
 using AuctionR.Core.API.Extensions;
+using AuctionR.Core.API.Hubs;
 using AuctionR.Core.API.Middlewares;
 using AuctionR.Core.Application.Extensions;
 using AuctionR.Core.Infrastructure.Extensions;
@@ -24,5 +25,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapHub<AuctionHub>("/auction");
 
 app.Run();

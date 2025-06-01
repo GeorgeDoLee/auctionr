@@ -1,7 +1,7 @@
 ﻿using AuctionR.Core.Application.Commands.Auctions.Create;
 using AuctionR.Core.Application.Commands.Auctions.Delete;
 using AuctionR.Core.Application.Commands.Auctions.Update;
-using AuctionR.Core.Application.Models;
+using AuctionR.Core.Application.Contracts.Models;
 using AuctionR.Core.Application.Queries.Auctions.Get;
 using AuctionR.Core.Application.Queries.Auctions.GetAll;
 using AuctionR.Shared.Responses;
