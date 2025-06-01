@@ -59,7 +59,7 @@ public class AuctionsController : ControllerBase
         if (response == null)
         {
             return BadRequest(ApiResponse<string>
-                .FailResponse("Auction with this product already exists"));
+                .FailResponse("Auction with this product already exists. You can add another auction if you cancel existing one"));
         }
 
         return CreatedAtAction(

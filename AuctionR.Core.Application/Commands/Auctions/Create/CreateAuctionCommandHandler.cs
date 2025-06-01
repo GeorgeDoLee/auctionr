@@ -1,5 +1,6 @@
 ﻿using AuctionR.Core.Application.Models;
 using AuctionR.Core.Domain.Entities;
+using AuctionR.Core.Domain.Enums;
 using AuctionR.Core.Domain.Interfaces;
 using Mapster;
 using MediatR;
@@ -18,12 +19,15 @@ public class CreateAuctionCommandHandler
 
     public async Task<AuctionModel?> Handle(CreateAuctionCommand command, CancellationToken ct)
     {
-        var existingAuction = await _unitOfWork.Auctions
+        var existingAuctions = await _unitOfWork.Auctions
             .FindAsync(a => a.ProductId == command.ProductId, ct);
 
-        if (existingAuction.Any())
+        foreach (var auction in existingAuctions)
         {
-            return null;
+            if(auction.Status != AuctionStatus.Cancelled)
+            {
+                return null;
+            }
         }
 
         var newAuction = command.Adapt<Auction>();
