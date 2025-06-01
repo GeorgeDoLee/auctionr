@@ -48,6 +48,17 @@ public class ErrorHandlerMiddleware
                 ApiResponse<string>.FailResponse(ex.Message)
             );
         }
+        catch (InvalidOperationException ex)
+        {
+            _logger.LogError(ex, "invalid operation exception occurred");
+
+            context.Response.StatusCode = StatusCodes.Status400BadRequest;
+            context.Response.ContentType = "application/json";
+
+            await context.Response.WriteAsJsonAsync(
+                ApiResponse<object>.FailResponse(ex.Message)
+            );
+        }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Unhandled exception occurred");
