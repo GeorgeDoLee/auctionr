@@ -16,7 +16,7 @@ public class UpdateAuctionCommandHandler : IRequestHandler<UpdateAuctionCommand,
 
     public async Task<bool> Handle(UpdateAuctionCommand command, CancellationToken ct)
     {
-        var auction = await _unitOfWork.Auctions.GetAsync(command.Id);
+        var auction = await _unitOfWork.Auctions.GetAsync(command.Id, ct);
 
         if (auction == null)
         {

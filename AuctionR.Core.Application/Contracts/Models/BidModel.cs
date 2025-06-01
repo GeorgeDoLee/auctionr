@@ -1,4 +1,4 @@
-﻿namespace AuctionR.Core.Application.Models;
+﻿namespace AuctionR.Core.Application.Contracts.Models;
 
 public class BidModel
 {
