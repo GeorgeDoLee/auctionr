@@ -10,11 +10,13 @@ public class Auction
     
     public decimal StartingPrice { get; set; }
 
+    public decimal MinimumBidIncrement { get; set; }
+
     public DateTime StartTime { get; set; }
 
     public DateTime EndTime { get; set; }
 
-    public decimal HighestBidAmount { get; set; }
+    public decimal? HighestBidAmount { get; set; }
 
     public int? HighestBidderId { get; set; }
 

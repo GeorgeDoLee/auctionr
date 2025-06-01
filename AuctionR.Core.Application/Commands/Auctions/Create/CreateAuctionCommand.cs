@@ -9,6 +9,8 @@ public class CreateAuctionCommand : IRequest<AuctionModel?>
 
     public decimal StartingPrice { get; set; }
 
+    public decimal MinimumBidIncrement { get; set; }
+
     public DateTime StartTime { get; set; }
 
     public DateTime EndTime { get; set; }

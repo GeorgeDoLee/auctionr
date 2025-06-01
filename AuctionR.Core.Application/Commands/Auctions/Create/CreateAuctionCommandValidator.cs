@@ -14,6 +14,10 @@ public class CreateAuctionCommandValidator : AbstractValidator<CreateAuctionComm
             .NotEmpty().WithMessage("Starting price is required.")
             .GreaterThan(0).WithMessage("Starting price must be greater than 0.");
 
+        RuleFor(x => x.MinimumBidIncrement)
+            .NotEmpty().WithMessage("MinimumBidIncrement is required.")
+            .GreaterThanOrEqualTo(0).WithMessage("MinimumBidIncrement must be greater than or equal to 0.");
+
         RuleFor(x => x.StartTime)
             .NotEmpty().WithMessage("Start time is required.")
             .Must(start => start > DateTime.UtcNow)

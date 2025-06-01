@@ -4,6 +4,7 @@ using AuctionR.Core.Infrastructure.Persistance;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AuctionR.Core.Infrastructure.Migrations
 {
     [DbContext(typeof(AuctionRDbContext))]
-    partial class AuctionRDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250601171610_MinimumBidIncrement")]
+    partial class MinimumBidIncrement
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
