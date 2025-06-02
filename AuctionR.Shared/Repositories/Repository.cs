@@ -17,13 +17,13 @@ public class Repository<TContext, TEntity> : IRepository<TEntity>
         _context = context;
     }
 
-    public async Task AddAsync(TEntity entity, CancellationToken ct = default)
+    public virtual async Task AddAsync(TEntity entity, CancellationToken ct = default)
     {
         await _context.Set<TEntity>()
             .AddAsync(entity, ct);
     }
 
-    public async Task<IEnumerable<TEntity>> FindAsync(
+    public virtual async Task<IEnumerable<TEntity>> FindAsync(
         Expression<Func<TEntity, bool>> predicate, CancellationToken ct = default)
     {
         return await _context.Set<TEntity>()
@@ -31,13 +31,13 @@ public class Repository<TContext, TEntity> : IRepository<TEntity>
             .ToListAsync(ct);
     }
 
-    public async Task<TEntity?> GetAsync(int id, CancellationToken ct = default)
+    public virtual async Task<TEntity?> GetAsync(int id, CancellationToken ct = default)
     {
         return await _context.Set<TEntity>()
             .FindAsync(id, ct);
     }
 
-    public async Task<IEnumerable<TEntity>> GetAllAsync(
+    public virtual async Task<IEnumerable<TEntity>> GetAllAsync(
         int pageNumber, int pageSize, CancellationToken ct = default)
     {
         return await _context.Set<TEntity>()
@@ -46,13 +46,13 @@ public class Repository<TContext, TEntity> : IRepository<TEntity>
             .ToListAsync(ct);
     }
 
-    public void Remove(TEntity entity)
+    public virtual void Remove(TEntity entity)
     {
         _context.Set<TEntity>()
             .Remove(entity);
     }
 
-    public IQueryable<TEntity> Query(
+    public virtual IQueryable<TEntity> Query(
         Expression<Func<TEntity, bool>>? expression)
     {
         return expression == null ?
