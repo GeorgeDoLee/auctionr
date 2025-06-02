@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using AuctionR.Core.Application.Extensions;
+using FluentValidation;
 
 namespace AuctionR.Core.Application.Commands.Auctions.Update;
 
@@ -6,13 +7,9 @@ public class UpdateAuctionCommandValidator : AbstractValidator<UpdateAuctionComm
 {
     public UpdateAuctionCommandValidator()
     {
-        RuleFor(x => x.Id)
-            .NotEmpty().WithMessage("Id is required.")
-            .GreaterThan(0).WithMessage("Id must be greater than 0.");
+        RuleFor(x => x.Id).ValidId();
 
-        RuleFor(x => x.ProductId)
-            .NotEmpty().WithMessage("Product ID is required.")
-            .GreaterThan(0).WithMessage("Product ID must be greater than 0.");
+        RuleFor(x => x.ProductId).ValidId("Product Id");
 
         RuleFor(x => x.StartingPrice)
             .NotEmpty().WithMessage("Starting price is required.")
