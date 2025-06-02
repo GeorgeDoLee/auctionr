@@ -1,5 +1,6 @@
 ﻿using AuctionR.Core.Application.Commands.Auctions.Create;
 using AuctionR.Core.Application.Commands.Auctions.Delete;
+using AuctionR.Core.Application.Commands.Auctions.End;
 using AuctionR.Core.Application.Commands.Auctions.Start;
 using AuctionR.Core.Application.Commands.Auctions.Update;
 using AuctionR.Core.Application.Contracts.Models;
@@ -103,5 +104,17 @@ public class AuctionsController : ControllerBase
 
         return Ok(ApiResponse<object?>
             .SuccessResponse($"Auction with id: {id} started successfully."));
+    }
+
+    [HttpPost("{id}/end")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> EndAuctionAsync([FromRoute] int id, CancellationToken ct)
+    {
+        _ = await _mediator.Send(new EndAuctionCommand(id), ct);
+
+        return Ok(ApiResponse<object?>
+            .SuccessResponse($"Auction with id: {id} ended successfully."));
     }
 }
