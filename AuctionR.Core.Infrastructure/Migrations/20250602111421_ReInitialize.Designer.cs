@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AuctionR.Core.Infrastructure.Migrations
 {
     [DbContext(typeof(AuctionRDbContext))]
-    [Migration("20250530143832_Initial")]
-    partial class Initial
+    [Migration("20250602111421_ReInitialize")]
+    partial class ReInitialize
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -36,11 +36,14 @@ namespace AuctionR.Core.Infrastructure.Migrations
                     b.Property<DateTime>("EndTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<decimal>("HighestBidAmount")
+                    b.Property<decimal?>("HighestBidAmount")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<int?>("HighestBidderId")
                         .HasColumnType("int");
+
+                    b.Property<decimal>("MinimumBidIncrement")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("ProductId")
                         .HasColumnType("int");

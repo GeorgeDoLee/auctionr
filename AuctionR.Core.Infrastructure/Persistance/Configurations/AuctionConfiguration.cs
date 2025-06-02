@@ -14,8 +14,12 @@ internal class AuctionConfiguration : IEntityTypeConfiguration<Auction>
 
         builder.Property(a => a.ProductId)
             .IsRequired();
-
-        builder.Property(a => a.StartingPrice)
+         
+        builder.Property(a => a.StartingPrice) 
+            .HasColumnType("decimal(18,2)")
+            .IsRequired();
+        
+        builder.Property(a => a.MinimumBidIncrement)
             .HasColumnType("decimal(18,2)")
             .IsRequired();
 
