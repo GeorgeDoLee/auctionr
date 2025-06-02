@@ -16,7 +16,7 @@ internal static class DummyData
             EndTime = DateTime.UtcNow.AddDays(3),
             HighestBidAmount = 0,
             HighestBidderId = null,
-            Status = AuctionStatus.Pending,
+            Status = AuctionStatus.Active,
         },
         new Auction
         {
@@ -38,7 +38,7 @@ internal static class DummyData
             EndTime = DateTime.UtcNow.AddDays(10),
             HighestBidAmount = 0,
             HighestBidderId = null,
-            Status = AuctionStatus.Pending,
+            Status = AuctionStatus.Active,
         },
     ];
 
