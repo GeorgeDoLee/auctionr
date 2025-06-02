@@ -2,6 +2,7 @@
 using AuctionR.Core.Application.Commands.Auctions.Create;
 using AuctionR.Core.Application.Commands.Auctions.Delete;
 using AuctionR.Core.Application.Commands.Auctions.End;
+using AuctionR.Core.Application.Commands.Auctions.Postpone;
 using AuctionR.Core.Application.Commands.Auctions.Start;
 using AuctionR.Core.Application.Commands.Auctions.Update;
 using AuctionR.Core.Application.Contracts.Models;
@@ -129,5 +130,28 @@ public class AuctionsController : ControllerBase
 
         return Ok(ApiResponse<object?>
             .SuccessResponse($"Auction with id: {id} cancelled successfully."));
+    }
+
+    
+
+    [HttpPost("{id}/postpone")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> PostponeAuctionAsync(
+        [FromRoute] int id,
+        [FromBody] PostponeAuctionCommand command, 
+        CancellationToken ct)
+    {
+        if (id != command.Id)
+        {
+            return BadRequest(ApiResponse<object?>
+                .FailResponse("URL Id and body Id do not match."));
+        }
+
+        _ = await _mediator.Send(command, ct);
+
+        return Ok(ApiResponse<object?>
+            .SuccessResponse($"Auction with id: {id} postponed successfully."));
     }
 }
