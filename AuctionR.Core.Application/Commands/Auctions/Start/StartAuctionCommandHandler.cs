@@ -21,7 +21,7 @@ public class StartAuctionCommandHandler : IRequestHandler<StartAuctionCommand, b
 
     public async Task<bool> Handle(StartAuctionCommand command, CancellationToken ct)
     {
-        _logger.LogInformation("Tryin to start auction with id: {auctionId}", command.Id);
+        _logger.LogInformation("Tryin to manually start auction with id: {auctionId}", command.Id);
         var auction = await _unitOfWork.Auctions.GetAsync(command.Id, ct);
 
         if (auction == null)
@@ -32,7 +32,7 @@ public class StartAuctionCommandHandler : IRequestHandler<StartAuctionCommand, b
 
         if (auction.Status != AuctionStatus.Pending)
         {
-            _logger.LogWarning("Auction with id: {auctionId} could not be started.", command.Id);
+            _logger.LogWarning("Auction with id: {auctionId} could not be started manually.", command.Id);
             throw new InvalidOperationException("Only pending auctions can be started manually.");
         }
 
