@@ -1,5 +1,6 @@
 ﻿using AuctionR.Core.API.Hubs;
 using AuctionR.Core.Application.Commands.Bids.Create;
+using AuctionR.Core.Application.Commands.Bids.Retract;
 using AuctionR.Core.Application.Contracts.HubClients;
 using AuctionR.Core.Application.Contracts.Models;
 using AuctionR.Core.Application.Queries.Bids.Get;
@@ -46,14 +47,14 @@ public class BidsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> PlaceBidAsync(
-    [FromBody] PlaceBidCommand command, CancellationToken ct)
+        [FromBody] PlaceBidCommand command, CancellationToken ct)
     {
         var response = await _mediator.Send(command, ct);
 
         if (response == null)
         {
             return BadRequest(ApiResponse<object?>
-                .FailResponse("Bid coult nod be placed."));
+                .FailResponse("Bid coult not be placed."));
         }
 
         await _hubContext.Clients
@@ -65,5 +66,28 @@ public class BidsController : ControllerBase
                 new { id = response.Id },
                 ApiResponse<AuctionModel>.SuccessResponse("Bid placed successfully.", response)
         );
+    }
+
+    [HttpPost("{id}/retract")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> RetractBidAsync(
+        [FromRoute] int id, CancellationToken ct)
+    {
+        var response = await _mediator.Send(new RetractBidCommand(id), ct);
+
+        if (response == null)
+        {
+            return BadRequest(ApiResponse<object?>
+                .FailResponse("Bid coult not be retracted."));
+        }
+
+        await _hubContext.Clients
+            .Group($"auction-{response.Id}")
+            .AuctionUpdated(response);
+
+        return Ok(ApiResponse<object?>
+            .FailResponse($"Bid with id: {id} retracted successfully."));
     }
 }

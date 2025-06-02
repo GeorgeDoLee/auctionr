@@ -22,5 +22,5 @@ public class Auction
 
     public AuctionStatus Status { get; set; }
 
-    public IEnumerable<Bid>? Bids { get; set; }
+    public IEnumerable<Bid> Bids { get; set; } = new List<Bid>();
 }
