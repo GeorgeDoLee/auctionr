@@ -20,7 +20,7 @@ public class AuctionModel
 
     public int? HighestBidderId { get; set; }
 
-    public AuctionStatus Status { get; set; }
+    public string Status { get; set; }
 
     public IEnumerable<BidModel>? Bids { get; set; }
 }
