@@ -32,14 +32,15 @@ public class UpdateAuctionCommandValidator : AbstractValidator<UpdateAuctionComm
             .Must((cmd, end) => end > cmd.StartTime)
             .WithMessage("End time must be after start time.");
 
-        RuleFor(x => x.HighestBidAmount)
-            .GreaterThanOrEqualTo(x => x.StartingPrice)
-            .WithMessage("Highest bid amount cannot be less than the starting price.");
-
         RuleFor(x => x.HighestBidderId)
             .GreaterThan(0)
             .When(x => x.HighestBidderId.HasValue)
             .WithMessage("Highest bidder ID must be greater than 0 if provided.");
+
+        RuleFor(x => x.HighestBidAmount)
+            .GreaterThanOrEqualTo(x => x.StartingPrice)
+            .When(x => x.HighestBidderId.HasValue)
+            .WithMessage("Highest bid amount cannot be less than the starting price.");
 
         RuleFor(x => x.Status)
             .IsInEnum()
