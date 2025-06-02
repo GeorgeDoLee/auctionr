@@ -1,10 +1,8 @@
 ﻿using AuctionR.Core.Application.Contracts.Models;
-using AuctionR.Core.Domain.Entities;
 using AuctionR.Core.Domain.Interfaces;
 using Mapster;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
-using System;
+using Microsoft.Extensions.Logging;
 
 namespace AuctionR.Core.Application.Queries.Auctions.GetAll;
 
@@ -12,18 +10,26 @@ public class GetAllAuctionsQueryHandler :
     IRequestHandler<GetAllAuctionsQuery, IEnumerable<AuctionModel>>
 {
     private readonly IUnitOfWork _unitOfWork;
-
-    public GetAllAuctionsQueryHandler(IUnitOfWork unitOfWork)
+    private readonly ILogger<GetAllAuctionsQueryHandler> _logger;
+    public GetAllAuctionsQueryHandler(
+        IUnitOfWork unitOfWork, 
+        ILogger<GetAllAuctionsQueryHandler> logger)
     {
         _unitOfWork = unitOfWork;
+        _logger = logger;
     }
 
     public async Task<IEnumerable<AuctionModel>> Handle(
         GetAllAuctionsQuery query, CancellationToken ct)
     {
+        _logger.LogInformation("trying to fetch auctions on page {pageNumber} with size {pageSize}.", 
+            query.PageNumber, query.PageSize);
 
         var auctions = await _unitOfWork.Auctions
             .GetAllAsync(query.PageNumber, query.PageSize, ct);
+
+        _logger.LogInformation("Auctions on page {pageNumber} with size {pageSize} fetched successfully.",
+            query.PageNumber, query.PageSize);
 
         return auctions.Adapt<List<AuctionModel>>();
     }

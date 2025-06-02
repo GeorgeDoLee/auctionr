@@ -6,24 +6,30 @@ using AuctionR.Core.Domain.Exceptions;
 using AuctionR.Core.Domain.Interfaces;
 using Mapster;
 using MediatR;
+using Microsoft.Extensions.Logging;
 
 namespace AuctionR.Core.Application.Commands.Bids.PlaceBid;
 
 public class PlaceBidCommandHandler : IRequestHandler<PlaceBidCommand, AuctionModel?>
 {
     private readonly IUnitOfWork _unitOfWork;
-
-    public PlaceBidCommandHandler(IUnitOfWork unitOfWork)
+    private readonly ILogger<PlaceBidCommandHandler> _logger;
+    public PlaceBidCommandHandler(
+        IUnitOfWork unitOfWork,
+        ILogger<PlaceBidCommandHandler> logger)
     {
         _unitOfWork = unitOfWork;
+        _logger = logger;
     }
 
     public async Task<AuctionModel?> Handle(PlaceBidCommand command, CancellationToken ct)
     {
+        _logger.LogInformation("Trying to place bid with properties: {@bid}", command);
         var auction = await _unitOfWork.Auctions.GetAsync(command.AuctionId, ct);
 
         if (auction == null)
         {
+            _logger.LogWarning("Auction with id: {auctionId} could not be found.", command.AuctionId);
             throw new NotFoundException($"Auction with id: {command.AuctionId} could not be found.");
         }
 
@@ -31,6 +37,7 @@ public class PlaceBidCommandHandler : IRequestHandler<PlaceBidCommand, AuctionMo
             DateTime.UtcNow < auction.StartTime ||
             DateTime.UtcNow > auction.EndTime)
         {
+            _logger.LogWarning("Bid cant be placed, because auction is not currently running.");
             throw new InvalidOperationException("Auction is not currently active.");
         }
 
@@ -40,6 +47,7 @@ public class PlaceBidCommandHandler : IRequestHandler<PlaceBidCommand, AuctionMo
 
         if (command.Amount < minAcceptableBid)
         {
+            _logger.LogWarning("Bid cant be placed, becacuse bid mount is too low.");
             throw new InvalidOperationException("Bid amount is too low.");
         }
 
@@ -50,6 +58,7 @@ public class PlaceBidCommandHandler : IRequestHandler<PlaceBidCommand, AuctionMo
         await _unitOfWork.Bids.AddAsync(newBid, ct);
         await _unitOfWork.Complete(ct);
 
+        _logger.LogInformation("Bid placed successfully.");
         return auction.Adapt<AuctionModel>();
     }
 }
