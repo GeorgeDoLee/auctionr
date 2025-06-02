@@ -3,6 +3,7 @@ using AuctionR.Core.API.Hubs;
 using AuctionR.Core.API.Middlewares;
 using AuctionR.Core.Application.Extensions;
 using AuctionR.Core.Infrastructure.Extensions;
+using AuctionR.Core.Infrastructure.Seeders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +17,12 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+}
+
+using (var scope = app.Services.CreateScope())
+{
+    var seeder = scope.ServiceProvider.GetRequiredService<ISeeder>();
+    await seeder.SeedAsync();
 }
 
 app.UseMiddleware<ErrorHandlerMiddleware>();
