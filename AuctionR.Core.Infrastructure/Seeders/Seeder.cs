@@ -21,8 +21,11 @@ internal class Seeder : ISeeder
     private async Task SeedEntitiesAsync<TEntity>(IEnumerable<TEntity> entities) 
         where TEntity : class
     {
-        await _context.Set<TEntity>()
-            .AddRangeAsync(entities);
-        await _context.SaveChangesAsync();
+        if (!_context.Set<TEntity>().Any())
+        {
+            await _context.Set<TEntity>()
+                .AddRangeAsync(entities);
+            await _context.SaveChangesAsync();
+        }
     }
 }
