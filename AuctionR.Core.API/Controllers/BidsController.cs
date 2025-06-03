@@ -4,6 +4,7 @@ using AuctionR.Core.Application.Commands.Bids.Retract;
 using AuctionR.Core.Application.Contracts.HubClients;
 using AuctionR.Core.Application.Contracts.Models;
 using AuctionR.Core.Application.Queries.Bids.Get;
+using AuctionR.Core.Application.Queries.Bids.GetByAuction;
 using AuctionR.Shared.Responses;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -40,6 +41,18 @@ public class BidsController : ControllerBase
 
         return Ok(ApiResponse<BidModel>
             .SuccessResponse($"Bid with id: {id} fetched successfully.", response));
+    }
+
+    [HttpGet]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> GetBidsByAuctionIdAsync(
+        [FromQuery] GetBidsByAuctionQuery query, CancellationToken ct)
+    {
+        var response = await _mediator.Send(query, ct);
+
+        return Ok(ApiResponse<IEnumerable<BidModel>>
+            .SuccessResponse($"Bids for auction  with Id: {query.AuctionId} fetched successfully.", response));
     }
 
     [HttpPost]
