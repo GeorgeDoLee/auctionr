@@ -11,11 +11,13 @@ using AuctionR.Core.Application.Queries.Auctions.GetAll;
 using AuctionR.Shared.Responses;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace AuctionR.Core.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
+[EnableRateLimiting("Fixed")]
 public class AuctionsController : ControllerBase
 {
     private readonly IMediator _mediator;

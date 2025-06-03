@@ -31,10 +31,12 @@ app.UseMiddleware<ErrorHandlerMiddleware>();
 
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
 app.UseAuthentication();
+app.UseAuthorization();
 
 app.UseHangfireDashboard();
+
+app.UseRateLimiter();
 
 app.MapControllers();
 

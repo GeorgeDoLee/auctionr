@@ -8,12 +8,14 @@ using AuctionR.Core.Application.Queries.Bids.GetByAuction;
 using AuctionR.Shared.Responses;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.AspNetCore.SignalR;
 
 namespace AuctionR.Core.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
+[EnableRateLimiting("Fixed")]
 public class BidsController : ControllerBase
 {
     private readonly IMediator _mediator;
