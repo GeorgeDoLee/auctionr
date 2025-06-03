@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using AuctionR.Core.Infrastructure.Jobs.Scheduling;
+using AuctionR.Core.Infrastructure.Settings;
 
 namespace AuctionR.Core.Infrastructure.Extensions;
 
@@ -14,6 +15,8 @@ public static class ServiceCollectionExtensions
 {
     public static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
+        services.Configure<BidSettings>(configuration.GetSection("BidSettings"));
+
         var defaultConnection = configuration.GetConnectionString("DefaultConnection");
         
         services.AddDbContext<AuctionRDbContext>(options =>

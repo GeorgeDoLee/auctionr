@@ -13,9 +13,9 @@ public class Bid
     public DateTime Timestamp { get; set; }
 
 
-    public bool IsRetractable()
+    public bool IsRetractable(int retractableSeconds)
     {
-        if (DateTime.UtcNow > Timestamp.AddSeconds(30))
+        if (DateTime.UtcNow > Timestamp.AddSeconds(retractableSeconds))
         {
             return false;
         }

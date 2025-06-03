@@ -1,9 +1,11 @@
 ﻿using AuctionR.Core.Application.Contracts.Responses;
 using AuctionR.Core.Domain.Exceptions;
 using AuctionR.Core.Domain.Interfaces;
+using AuctionR.Core.Infrastructure.Settings;
 using Mapster;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace AuctionR.Core.Application.Commands.Bids.Retract;
 
@@ -11,12 +13,16 @@ public class RetractBidCommandHandler : IRequestHandler<RetractBidCommand, BidRe
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<RetractBidCommandHandler> _logger;
+    private readonly BidSettings _bidSettings;
+
     public RetractBidCommandHandler(
         IUnitOfWork unitOfWork,
-        ILogger<RetractBidCommandHandler> logger)
+        ILogger<RetractBidCommandHandler> logger,
+        IOptions<BidSettings> bidSettingsOptions)
     {
         _unitOfWork = unitOfWork;
         _logger = logger;
+        _bidSettings = bidSettingsOptions.Value;
     }
 
     public async Task<BidRetractedResponse> Handle(RetractBidCommand command, CancellationToken ct)
@@ -30,10 +36,10 @@ public class RetractBidCommandHandler : IRequestHandler<RetractBidCommand, BidRe
             throw new NotFoundException($"Bid with id: {command.Id} could not be found.");
         }
 
-        if (!bid.IsRetractable())
+        if (!bid.IsRetractable(_bidSettings.RetractableSeconds))
         {
             _logger.LogWarning("bid with Id: {bidId} could not be retracted.", bid.Id);
-            throw new InvalidOperationException("Bids may only be retracted within 30 seconds after being placed.");
+            throw new InvalidOperationException($"Bids may only be retracted within {_bidSettings.RetractableSeconds} seconds after being placed.");
         }
 
         var auction = await _unitOfWork.Auctions.GetWithBidsAsync(bid.AuctionId, ct);
