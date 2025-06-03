@@ -1,4 +1,5 @@
 ﻿using AuctionR.Core.Application.Contracts.Models;
+using AuctionR.Core.Domain.Exceptions;
 using AuctionR.Core.Domain.Interfaces;
 using Mapster;
 using MediatR;
@@ -21,9 +22,15 @@ public class GetBidQueryHandler : IRequestHandler<GetBidQuery, BidModel>
     public async Task<BidModel> Handle(GetBidQuery query, CancellationToken ct)
     {
         _logger.LogInformation("Trying to get bid by id: {id}", query.Id);
-        var bids = await _unitOfWork.Bids.GetAsync(query.Id, ct);
+        var bid = await _unitOfWork.Bids.GetAsync(query.Id, ct);
+
+        if (bid == null)
+        {
+            _logger.LogWarning("Bid with id: {bidId} could not be found.", query.Id);
+            throw new NotFoundException($"Bid with id: {query.Id} could not be found,");
+        }
 
         _logger.LogInformation("Bid by id: {id} fetched successfully.", query.Id);
-        return bids.Adapt<BidModel>();
+        return bid.Adapt<BidModel>();
     }
 }
