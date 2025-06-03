@@ -1,5 +1,4 @@
-﻿using AuctionR.Core.Domain.Enums;
-using AuctionR.Core.Domain.Exceptions;
+﻿using AuctionR.Core.Domain.Exceptions;
 using AuctionR.Core.Domain.Interfaces;
 using MediatR;
 using Microsoft.Extensions.Logging;
@@ -30,14 +29,7 @@ public class PostponeAuctionCommandHandler : IRequestHandler<PostponeAuctionComm
             throw new NotFoundException($"Auction with id: {command.Id} could not be found.");
         }
 
-        if (auction.Status != AuctionStatus.Pending)
-        {
-            _logger.LogWarning("Auction with id: {auctionId} could not be postponed.", command.Id);
-            throw new InvalidOperationException("Only pending auctions can be postponed.");
-        }
-
-        auction.StartTime = command.StartTime;
-        auction.EndTime = command.EndTime;
+        auction.Postpone(command.StartTime, command.EndTime);
         await _unitOfWork.Complete(ct);
 
         _logger.LogInformation("Auction with id: {auctionId} postponed succussfully.", command.Id);

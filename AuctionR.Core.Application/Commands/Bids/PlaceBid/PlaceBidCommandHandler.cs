@@ -33,27 +33,17 @@ public class PlaceBidCommandHandler : IRequestHandler<PlaceBidCommand, AuctionMo
             throw new NotFoundException($"Auction with id: {command.AuctionId} could not be found.");
         }
 
-        if (auction.Status != AuctionStatus.Active ||
-            DateTime.UtcNow < auction.StartTime ||
-            DateTime.UtcNow > auction.EndTime)
-        {
-            _logger.LogWarning("Bid cant be placed, because auction is not currently running.");
-            throw new InvalidOperationException("Auction is not currently active.");
-        }
-
-        var minAcceptableBid = auction.HighestBidderId == null
-            ? auction.StartingPrice
-            : auction.HighestBidAmount + auction.MinimumBidIncrement;
-
-        if (command.Amount < minAcceptableBid)
-        {
-            _logger.LogWarning("Bid cant be placed, becacuse bid mount is too low.");
-            throw new InvalidOperationException("Bid amount is too low.");
-        }
-
         var newBid = command.Adapt<Bid>();
-        auction.HighestBidAmount = newBid.Amount;
-        auction.HighestBidderId = newBid.BidderId;
+
+        try
+        {
+            auction.PlaceBid(newBid);
+        }
+        catch (InvalidOperationException ex)
+        {
+            _logger.LogWarning("Bid could not be placed: {Message}", ex.Message);
+            throw;
+        }
 
         await _unitOfWork.Bids.AddAsync(newBid, ct);
         await _unitOfWork.Complete(ct);

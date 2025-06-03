@@ -30,9 +30,9 @@ public class RetractBidCommandHandler : IRequestHandler<RetractBidCommand, Aucti
             throw new NotFoundException($"Bid with id: {command.Id} could not be found.");
         }
 
-        if (DateTime.UtcNow > bid.Timestamp.AddSeconds(30))
+        if (!bid.IsRetractable())
         {
-            _logger.LogWarning("Auction for bid with Id: {bidId} not found.", bid.Id);
+            _logger.LogWarning("bid with Id: {bidId} could not be retracted.", bid.Id);
             throw new InvalidOperationException("Bids may only be retracted within 30 seconds after being placed.");
         }
 
@@ -43,26 +43,14 @@ public class RetractBidCommandHandler : IRequestHandler<RetractBidCommand, Aucti
             throw new NotFoundException($"Auction associated with bid Id: {bid.Id} could not be found.");
         }
 
-        _logger.LogInformation("Retracting bid with Id {bidId} from Auction with Id {auctionId}", bid.Id, auction.Id);
-        
-        var previousHighestBid = auction.Bids
-            .Where(b => b.Id != bid.Id)
-            .MaxBy(b => b.Amount);
-
-        if (previousHighestBid == null)
+        try
         {
-            _logger.LogInformation("No previous bids found. Resetting highest bid info for Auction with Id {auctionId}", auction.Id);
-
-            auction.HighestBidAmount = 0m;
-            auction.HighestBidderId = null;
+            auction.RetractBid(bid);
         }
-        else
+        catch (InvalidOperationException ex)
         {
-            _logger.LogInformation("New highest bid after retraction: bid with Id {bidId} with amount {amount}",
-                previousHighestBid.Id, previousHighestBid.Amount);
-            
-            auction.HighestBidAmount = previousHighestBid.Amount;
-            auction.HighestBidderId = previousHighestBid.BidderId;
+            _logger.LogWarning("Bid retraction failed: {Message}", ex.Message);
+            throw;
         }
 
         _unitOfWork.Bids.Remove(bid);

@@ -1,5 +1,4 @@
-﻿using AuctionR.Core.Domain.Enums;
-using AuctionR.Core.Domain.Exceptions;
+﻿using AuctionR.Core.Domain.Exceptions;
 using AuctionR.Core.Domain.Interfaces;
 using MediatR;
 using Microsoft.Extensions.Logging;
@@ -30,15 +29,7 @@ public class EndAuctionCommandHandler : IRequestHandler<EndAuctionCommand, bool>
             throw new NotFoundException($"Auction with id: {command.Id} could not be found.");
         }
 
-        if (auction.Status != AuctionStatus.Active)
-        {
-            _logger.LogWarning("Auction with id: {auctionId} could not be ended manually.", command.Id);
-            throw new InvalidOperationException("Only active auctions can be ended manually.");
-        }
-
-        auction.Status = AuctionStatus.Ended;
-        auction.EndTime = DateTime.UtcNow;
-
+        auction.End();
         await _unitOfWork.Complete(ct);
 
         _logger.LogInformation("Auction with id: {auctionId} successfully ended.", command.Id);

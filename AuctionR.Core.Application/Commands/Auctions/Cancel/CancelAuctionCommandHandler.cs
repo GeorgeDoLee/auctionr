@@ -30,13 +30,7 @@ public class CancelAuctionCommandHandler : IRequestHandler<CancelAuctionCommand,
             throw new NotFoundException($"Auction with id: {command.Id} could not be found.");
         }
 
-        if (auction.Status == AuctionStatus.Ended)
-        {
-            _logger.LogWarning("Auction with id: {auctionId} could not be cancelled.", command.Id);
-            throw new InvalidOperationException("Cannot cancel an auction that has already ended.");
-        }
-
-        auction.Status = AuctionStatus.Cancelled;
+        auction.Cancel();
         await _unitOfWork.Complete(ct);
 
         _logger.LogInformation("Auction with id: {auctionId} cancelled successfully.", command.Id);

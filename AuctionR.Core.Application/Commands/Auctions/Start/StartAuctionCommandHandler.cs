@@ -30,14 +30,7 @@ public class StartAuctionCommandHandler : IRequestHandler<StartAuctionCommand, b
             throw new NotFoundException($"Auction with id: {command.Id} could not be found.");
         }
 
-        if (auction.Status != AuctionStatus.Pending)
-        {
-            _logger.LogWarning("Auction with id: {auctionId} could not be started manually.", command.Id);
-            throw new InvalidOperationException("Only pending auctions can be started manually.");
-        }
-
-        auction.StartTime = DateTime.UtcNow;
-        auction.Status = AuctionStatus.Active;
+        auction.Start();
         await _unitOfWork.Complete(ct);
 
         _logger.LogInformation("Auction with id: {auctionId} started successfully.", command.Id);

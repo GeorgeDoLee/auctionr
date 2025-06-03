@@ -11,4 +11,15 @@ public class Bid
     public decimal Amount { get; set; }
 
     public DateTime Timestamp { get; set; }
+
+
+    public bool IsRetractable()
+    {
+        if (DateTime.UtcNow > Timestamp.AddSeconds(30))
+        {
+            return false;
+        }
+
+        return true;
+    }
 }
