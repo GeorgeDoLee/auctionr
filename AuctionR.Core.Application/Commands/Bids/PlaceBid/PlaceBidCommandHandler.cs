@@ -1,7 +1,6 @@
 ﻿using AuctionR.Core.Application.Commands.Bids.Create;
 using AuctionR.Core.Application.Contracts.Models;
 using AuctionR.Core.Domain.Entities;
-using AuctionR.Core.Domain.Enums;
 using AuctionR.Core.Domain.Exceptions;
 using AuctionR.Core.Domain.Interfaces;
 using Mapster;
@@ -10,7 +9,7 @@ using Microsoft.Extensions.Logging;
 
 namespace AuctionR.Core.Application.Commands.Bids.PlaceBid;
 
-public class PlaceBidCommandHandler : IRequestHandler<PlaceBidCommand, AuctionModel?>
+public class PlaceBidCommandHandler : IRequestHandler<PlaceBidCommand, BidModel>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<PlaceBidCommandHandler> _logger;
@@ -22,7 +21,7 @@ public class PlaceBidCommandHandler : IRequestHandler<PlaceBidCommand, AuctionMo
         _logger = logger;
     }
 
-    public async Task<AuctionModel?> Handle(PlaceBidCommand command, CancellationToken ct)
+    public async Task<BidModel> Handle(PlaceBidCommand command, CancellationToken ct)
     {
         _logger.LogInformation("Trying to place bid with properties: {@bid}", command);
         var auction = await _unitOfWork.Auctions.GetAsync(command.AuctionId, ct);
@@ -35,20 +34,12 @@ public class PlaceBidCommandHandler : IRequestHandler<PlaceBidCommand, AuctionMo
 
         var newBid = command.Adapt<Bid>();
 
-        try
-        {
-            auction.PlaceBid(newBid);
-        }
-        catch (InvalidOperationException ex)
-        {
-            _logger.LogWarning("Bid could not be placed: {Message}", ex.Message);
-            throw;
-        }
+        auction.PlaceBid(newBid);
 
         await _unitOfWork.Bids.AddAsync(newBid, ct);
         await _unitOfWork.Complete(ct);
 
         _logger.LogInformation("Bid placed successfully.");
-        return auction.Adapt<AuctionModel>();
+        return newBid.Adapt<BidModel>();
     }
 }

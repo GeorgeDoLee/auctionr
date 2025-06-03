@@ -1,4 +1,5 @@
 ﻿using AuctionR.Core.Application.Commands.Bids.Create;
+using AuctionR.Core.Application.Contracts.Responses;
 using AuctionR.Core.Domain.Entities;
 using Mapster;
 
@@ -13,5 +14,12 @@ public class BidMappingConfig : IRegister
             .Map(dest => dest.BidderId, src => src.BidderId)
             .Map(dest => dest.Amount, src => src.Amount)
             .Map(dest => dest.Timestamp, _ => DateTime.UtcNow);
+
+        config.NewConfig<Bid, BidRetractedResponse>()
+            .Map(dest => dest.PreviousHighestBidId, src => src.Id)
+            .Map(dest => dest.AuctionId, src => src.AuctionId)
+            .Map(dest => dest.PreviousHighestBidderId, src => src.BidderId)
+            .Map(dest => dest.PreviousHighestBidAmount, src => src.Amount)
+            .Map(dest => dest.PreviousHighestBidTimestamp, src => src.Timestamp);
     }
 }

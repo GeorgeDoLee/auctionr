@@ -71,13 +71,13 @@ public class BidsController : ControllerBase
         }
 
         await _hubContext.Clients
-            .Group($"auction-{response.Id}")
-            .AuctionUpdated(response);
+            .Group($"auction-{response.AuctionId}")
+            .BidPlaced(response);
 
         return CreatedAtAction(
                 nameof(GetBidByIdAsync),
                 new { id = response.Id },
-                ApiResponse<AuctionModel>.SuccessResponse("Bid placed successfully.", response)
+                ApiResponse<BidModel>.SuccessResponse("Bid placed successfully.", response)
         );
     }
 
@@ -90,15 +90,9 @@ public class BidsController : ControllerBase
     {
         var response = await _mediator.Send(new RetractBidCommand(id), ct);
 
-        if (response == null)
-        {
-            return BadRequest(ApiResponse<object?>
-                .FailResponse("Bid coult not be retracted."));
-        }
-
         await _hubContext.Clients
-            .Group($"auction-{response.Id}")
-            .AuctionUpdated(response);
+            .Group($"auction-{response.AuctionId}")
+            .BidRetracted(response);
 
         return Ok(ApiResponse<object?>
             .FailResponse($"Bid with id: {id} retracted successfully."));

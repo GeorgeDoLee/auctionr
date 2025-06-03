@@ -50,7 +50,7 @@ public class ErrorHandlerMiddleware
         }
         catch (InvalidOperationException ex)
         {
-            _logger.LogError(ex, "invalid operation exception occurred");
+            _logger.LogError(ex, "invalid operation exception occurred: {Message}", ex.Message);
 
             context.Response.StatusCode = StatusCodes.Status400BadRequest;
             context.Response.ContentType = "application/json";

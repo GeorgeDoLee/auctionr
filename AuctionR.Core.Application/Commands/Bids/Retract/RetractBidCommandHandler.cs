@@ -1,4 +1,4 @@
-﻿using AuctionR.Core.Application.Contracts.Models;
+﻿using AuctionR.Core.Application.Contracts.Responses;
 using AuctionR.Core.Domain.Exceptions;
 using AuctionR.Core.Domain.Interfaces;
 using Mapster;
@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 
 namespace AuctionR.Core.Application.Commands.Bids.Retract;
 
-public class RetractBidCommandHandler : IRequestHandler<RetractBidCommand, AuctionModel?>
+public class RetractBidCommandHandler : IRequestHandler<RetractBidCommand, BidRetractedResponse>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<RetractBidCommandHandler> _logger;
@@ -19,7 +19,7 @@ public class RetractBidCommandHandler : IRequestHandler<RetractBidCommand, Aucti
         _logger = logger;
     }
 
-    public async Task<AuctionModel?> Handle(RetractBidCommand command, CancellationToken ct)
+    public async Task<BidRetractedResponse> Handle(RetractBidCommand command, CancellationToken ct)
     {
         _logger.LogInformation("trying to retract bid with Id {bidId}", command.Id);
         var bid = await _unitOfWork.Bids.GetAsync(command.Id, ct);
@@ -36,27 +36,22 @@ public class RetractBidCommandHandler : IRequestHandler<RetractBidCommand, Aucti
             throw new InvalidOperationException("Bids may only be retracted within 30 seconds after being placed.");
         }
 
-        var auction = await _unitOfWork.Auctions.GetAsync(bid.AuctionId, ct);
+        var auction = await _unitOfWork.Auctions.GetWithBidsAsync(bid.AuctionId, ct);
 
         if (auction == null)
         {
             throw new NotFoundException($"Auction associated with bid Id: {bid.Id} could not be found.");
         }
 
-        try
-        {
-            auction.RetractBid(bid);
-        }
-        catch (InvalidOperationException ex)
-        {
-            _logger.LogWarning("Bid retraction failed: {Message}", ex.Message);
-            throw;
-        }
+        var previousHighestBid = auction.RetractBid(bid);
 
         _unitOfWork.Bids.Remove(bid);
         await _unitOfWork.Complete(ct);
 
         _logger.LogInformation("Bid retraction completed successfully for bid with Id {bidId}", bid.Id);
-        return auction.Adapt<AuctionModel>();
+
+        return previousHighestBid == null
+            ? new BidRetractedResponse { AuctionId = auction.Id }
+            : previousHighestBid.Adapt<BidRetractedResponse>();
     }
 }

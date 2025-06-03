@@ -3,7 +3,7 @@ using MediatR;
 
 namespace AuctionR.Core.Application.Commands.Bids.Create;
 
-public class PlaceBidCommand : IRequest<AuctionModel?>
+public class PlaceBidCommand : IRequest<BidModel>
 {
     public int AuctionId { get; set; }
 

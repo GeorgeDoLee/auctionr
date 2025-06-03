@@ -1,5 +1,4 @@
 ﻿using AuctionR.Core.Domain.Enums;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace AuctionR.Core.Domain.Entities;
 
@@ -82,6 +81,11 @@ public class Auction
             throw new InvalidOperationException("Auction is not running at this time.");
         }
 
+        if (HighestBidderId.HasValue && HighestBidderId == bid.BidderId)
+        {
+            throw new InvalidOperationException("You are already the highest bidder.");
+        }
+
         var minAcceptableBid = HighestBidAmount.HasValue
             ? HighestBidAmount.Value + MinimumBidIncrement
             : StartingPrice;
@@ -96,7 +100,7 @@ public class Auction
         Bids.Add(bid);
     }
 
-    public void RetractBid(Bid bid)
+    public Bid? RetractBid(Bid bid)
     {
         if (!Bids.Contains(bid))
         {
@@ -109,12 +113,14 @@ public class Auction
         {
             HighestBidAmount = 0m;
             HighestBidderId = null;
+
+            return null;
         }
-        else
-        {
-            var highestBid = Bids.MaxBy(b => b.Amount)!;
-            HighestBidAmount = highestBid.Amount;
-            HighestBidderId = highestBid.BidderId;
-        }
+
+        var previousHighestBid = Bids.MaxBy(b => b.Amount)!;
+        HighestBidAmount = previousHighestBid.Amount;
+        HighestBidderId = previousHighestBid.BidderId;
+
+        return previousHighestBid;
     }
 }
