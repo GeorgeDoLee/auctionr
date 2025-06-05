@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using AuctionR.Core.API.ExceptionHandling;
+using AuctionR.Core.Domain.Exceptions;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
@@ -122,6 +124,21 @@ public static class WebApplicationBuilderExtensions
                 ValidIssuer = issuer,
                 ValidAudience = audience,
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key))
+            };
+
+            options.Events = new JwtBearerEvents
+            {
+                OnChallenge = async context =>
+                {
+                    context.HandleResponse();
+
+                    await ExceptionHandler.HandleUnauthorizedExceptionAsync(context.HttpContext);
+                },
+
+                OnForbidden = async context =>
+                {
+                    await ExceptionHandler.HandleForbiddenExceptionAsync(context.HttpContext, new ForbiddenException());
+                }
             };
         });
 
