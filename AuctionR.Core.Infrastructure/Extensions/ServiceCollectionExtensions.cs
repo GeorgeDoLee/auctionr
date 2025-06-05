@@ -16,6 +16,7 @@ public static class ServiceCollectionExtensions
     public static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         services.Configure<BidSettings>(configuration.GetSection("BidSettings"));
+        services.Configure<BidSettings>(configuration.GetSection("CronSettings"));
 
         var defaultConnection = configuration.GetConnectionString("DefaultConnection");
         
