@@ -7,7 +7,7 @@ using System.Threading.RateLimiting;
 
 namespace AuctionR.Core.API.Extensions;
 
-public static class WebAppliactionBuilderExtensions
+public static class WebApplicationBuilderExtensions
 {
     public static WebApplicationBuilder AddPresentation(this WebApplicationBuilder builder)
     {
@@ -15,6 +15,17 @@ public static class WebAppliactionBuilderExtensions
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSignalR();
 
+        builder.AddSwagger();
+        builder.AddSerilogLogging();
+        builder.AddRateLimiting();
+        builder.AddJwtAuthentication();
+        builder.Services.AddAuthorization();
+
+        return builder;
+    }
+
+    private static WebApplicationBuilder AddSwagger(this WebApplicationBuilder builder)
+    {
         builder.Services.AddSwaggerGen(c =>
         {
             c.AddSecurityDefinition("bearerAuth", new OpenApiSecurityScheme
@@ -39,15 +50,24 @@ public static class WebAppliactionBuilderExtensions
             });
         });
 
-        builder.Host.UseSerilog((context, configuration) =>
-            configuration.ReadFrom.Configuration(context.Configuration)
-        );
+        return builder;
+    }
 
+    private static WebApplicationBuilder AddSerilogLogging(this WebApplicationBuilder builder)
+    {
+        builder.Host.UseSerilog((context, configuration) =>
+            configuration.ReadFrom.Configuration(context.Configuration));
+
+        return builder;
+    }
+
+    private static WebApplicationBuilder AddRateLimiting(this WebApplicationBuilder builder)
+    {
         builder.Services.AddRateLimiter(options =>
         {
-            var rateLimitConfig = builder.Configuration.GetSection("RateLimiting");
-            int permitLimit = rateLimitConfig.GetValue<int>("PermitLimit");
-            int windowSeconds = rateLimitConfig.GetValue<int>("WindowSeconds");
+            var config = builder.Configuration.GetSection("RateLimiting");
+            int permitLimit = config.GetValue<int>("PermitLimit");
+            int windowSeconds = config.GetValue<int>("WindowSeconds");
 
             options.AddPolicy("Fixed", httpContext =>
                 RateLimitPartition.GetFixedWindowLimiter(
@@ -64,17 +84,15 @@ public static class WebAppliactionBuilderExtensions
             {
                 context.HttpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests;
                 context.HttpContext.Response.ContentType = "text/plain";
-                await context.HttpContext.Response.WriteAsync("Too many requests. try again later.");
+                await context.HttpContext.Response.WriteAsync("Too many requests. Try again later.");
             };
         });
 
-        var jwtKey = builder.Configuration["Jwt:Key"];
+        return builder;
+    }
 
-        if (string.IsNullOrWhiteSpace(jwtKey))
-        {
-            throw new Exception("Missing JWT key in config");
-        }
-
+    private static WebApplicationBuilder AddJwtAuthentication(this WebApplicationBuilder builder)
+    {
         builder.Services.AddAuthentication(options =>
         {
             options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -83,21 +101,29 @@ public static class WebAppliactionBuilderExtensions
         })
         .AddJwtBearer(options =>
         {
-            options.TokenValidationParameters = new TokenValidationParameters()
+            var jwt = builder.Configuration.GetSection("Jwt");
+            string? issuer = jwt.GetValue<string>("Issuer");
+            string? audience = jwt.GetValue<string>("Audience");
+            string? key = jwt.GetValue<string>("Key");
+            int clockSkewSeconds = jwt.GetValue<int>("ClockSkewSeconds", 0);
+
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(issuer, nameof(issuer));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(audience, nameof(audience));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(key, nameof(key));
+
+            options.TokenValidationParameters = new TokenValidationParameters
             {
                 ValidateIssuer = true,
                 ValidateAudience = true,
                 ValidateIssuerSigningKey = true,
                 RequireExpirationTime = true,
                 ValidateLifetime = true,
-                ClockSkew = TimeSpan.Zero,
-                ValidIssuer = builder.Configuration["Jwt:Issuer"],
-                ValidAudience = builder.Configuration["Jwt:Audience"],
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
+                ClockSkew = TimeSpan.FromSeconds(clockSkewSeconds),
+                ValidIssuer = issuer,
+                ValidAudience = audience,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key))
             };
         });
-
-        builder.Services.AddAuthorization();
 
         return builder;
     }
