@@ -31,12 +31,12 @@ app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.UseHttpsRedirection();
 
+app.UseRateLimiter();
+
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseHangfireDashboard();
-
-app.UseRateLimiter();
 
 app.MapControllers();
 

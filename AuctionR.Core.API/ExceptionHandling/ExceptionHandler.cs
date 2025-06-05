@@ -1,4 +1,5 @@
-﻿using AuctionR.Core.Domain.Exceptions;
+﻿using AuctionR.Core.API.Constants;
+using AuctionR.Core.Domain.Exceptions;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 
@@ -90,6 +91,23 @@ public static class ExceptionHandler
 
         context.Response.StatusCode = StatusCodes.Status403Forbidden;
         context.Response.ContentType = "application/problem+json";
+        await context.Response.WriteAsJsonAsync(problem);
+    }
+
+    public static async Task HandleRateLimitExceptionAsync(HttpContext context)
+    {
+        var problem = new ProblemDetails
+        {
+            Type = ProblemTypeUrls.TooManyRequests,
+            Title = "Too Many Requests",
+            Status = StatusCodes.Status429TooManyRequests,
+            Detail = "You have exceeded the allowed number of requests. Please try again later.",
+            Instance = context.Request.Path
+        };
+
+        context.Response.StatusCode = StatusCodes.Status429TooManyRequests;
+        context.Response.ContentType = "application/problem+json";
+
         await context.Response.WriteAsJsonAsync(problem);
     }
 

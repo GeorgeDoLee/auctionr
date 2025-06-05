@@ -1,4 +1,4 @@
-﻿namespace AuctionR.Core.API.ExceptionHandling;
+﻿namespace AuctionR.Core.API.Constants;
 
 public static class ProblemTypeUrls
 {
@@ -7,4 +7,5 @@ public static class ProblemTypeUrls
     public const string InternalServerError = "https://tools.ietf.org/html/rfc7231#section-6.6.1";
     public const string Unauthorized = "https://tools.ietf.org/html/rfc7235#section-3.1";
     public const string Forbidden = "https://tools.ietf.org/html/rfc7231#section-6.5.3";
+    public const string TooManyRequests = "https://tools.ietf.org/html/rfc6585#section-4";
 }

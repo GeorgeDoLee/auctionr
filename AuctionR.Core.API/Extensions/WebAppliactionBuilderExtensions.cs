@@ -1,6 +1,7 @@
 ﻿using AuctionR.Core.API.ExceptionHandling;
 using AuctionR.Core.Domain.Exceptions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
@@ -84,9 +85,7 @@ public static class WebApplicationBuilderExtensions
 
             options.OnRejected = async (context, _) =>
             {
-                context.HttpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests;
-                context.HttpContext.Response.ContentType = "text/plain";
-                await context.HttpContext.Response.WriteAsync("Too many requests. Try again later.");
+                await ExceptionHandler.HandleRateLimitExceptionAsync(context.HttpContext);
             };
         });
 
