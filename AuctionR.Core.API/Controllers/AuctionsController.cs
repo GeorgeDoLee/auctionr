@@ -1,11 +1,9 @@
 ﻿using AuctionR.Core.API.Constants;
 using AuctionR.Core.Application.Commands.Auctions.Cancel;
 using AuctionR.Core.Application.Commands.Auctions.Create;
-using AuctionR.Core.Application.Commands.Auctions.Delete;
 using AuctionR.Core.Application.Commands.Auctions.End;
 using AuctionR.Core.Application.Commands.Auctions.Postpone;
 using AuctionR.Core.Application.Commands.Auctions.Start;
-using AuctionR.Core.Application.Commands.Auctions.Update;
 using AuctionR.Core.Application.Contracts.Models;
 using AuctionR.Core.Application.Queries.Auctions.Get;
 using AuctionR.Core.Application.Queries.Auctions.GetAll;
@@ -82,31 +80,6 @@ public class AuctionsController : ControllerBase
                 new { id = response.Id },
                 ApiResponse<AuctionModel>.SuccessResponse("Auction Created successfully.", response)
         );
-    }
-
-    [HttpPut]
-    [Authorize(Policy = Permissions.AuctionsUpdate)]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> UpdateAuctionAsync(
-        [FromBody] UpdateAuctionCommand command, CancellationToken ct)
-    {
-        _ = await _mediator.Send(command, ct);
-
-        return NoContent();
-    }
-
-    [HttpDelete("{id}")]
-    [Authorize(Policy = Permissions.AuctionsDelete)]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> DeleteAuctionAsync([FromRoute] int id, CancellationToken ct)
-    {
-        _ = await _mediator.Send(new DeleteAuctionCommand(id), ct);
-
-        return NoContent();
     }
 
     [HttpPost("{id}/start")]
