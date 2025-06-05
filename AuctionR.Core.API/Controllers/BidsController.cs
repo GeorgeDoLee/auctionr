@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.AspNetCore.SignalR;
+using System.Security.Claims;
 
 namespace AuctionR.Core.API.Controllers;
 
@@ -100,7 +101,9 @@ public class BidsController : ControllerBase
     public async Task<IActionResult> RetractBidAsync(
         [FromRoute] int id, CancellationToken ct)
     {
-        var response = await _mediator.Send(new RetractBidCommand(id), ct);
+        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+
+        var response = await _mediator.Send(new RetractBidCommand(id, userId), ct);
 
         await _hubContext.Clients
             .Group($"auction-{response.AuctionId}")

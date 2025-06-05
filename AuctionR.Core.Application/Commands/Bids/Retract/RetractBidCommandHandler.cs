@@ -27,13 +27,21 @@ public class RetractBidCommandHandler : IRequestHandler<RetractBidCommand, BidRe
 
     public async Task<BidRetractedResponse> Handle(RetractBidCommand command, CancellationToken ct)
     {
-        _logger.LogInformation("trying to retract bid with Id {bidId}", command.Id);
-        var bid = await _unitOfWork.Bids.GetAsync(command.Id, ct);
+        _logger.LogInformation("trying to retract bid with Id {bidId}", command.BidId);
+        var bid = await _unitOfWork.Bids.GetAsync(command.BidId, ct);
 
         if (bid == null)
         {
-            _logger.LogWarning("Bid with Id: {bidId} could not be found.", command.Id);
-            throw new NotFoundException($"Bid with id: {command.Id} could not be found.");
+            _logger.LogWarning("Bid with Id: {bidId} could not be found.", command.BidId);
+            throw new NotFoundException($"Bid with id: {command.BidId} could not be found.");
+        }
+
+        if (bid.BidderId != command.BidderId)
+        {
+            _logger.LogWarning(
+                "bidder id: {bidderId} did not match with incoming request user id: {userId}.",
+                bid.BidderId, command.BidderId);
+            throw new InvalidOperationException($"Bid id doesnt match incoming request user id.");
         }
 
         if (!bid.IsRetractable(_bidSettings.RetractableSeconds))

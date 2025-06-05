@@ -7,6 +7,7 @@ public class RetractBidCommandValidator : AbstractValidator<RetractBidCommand>
 {
     public RetractBidCommandValidator()
     {
-        RuleFor(x => x.Id).ValidId();
+        RuleFor(x => x.BidId).ValidId("BidId");
+        RuleFor(x => x.BidderId).ValidId("BidderId");
     }
 }
