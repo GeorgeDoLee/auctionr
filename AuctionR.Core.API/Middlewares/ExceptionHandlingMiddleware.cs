@@ -1,4 +1,5 @@
-﻿using AuctionR.Core.Domain.Exceptions;
+﻿using AuctionR.Core.API.Constants;
+using AuctionR.Core.Domain.Exceptions;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 
@@ -52,7 +53,7 @@ public class ExceptionHandlingMiddleware
 
         var problemDetails = new ValidationProblemDetails(validationErrors)
         {
-            Type = "https://tools.ietf.org/html/rfc7231#section-6.5.1",
+            Type = ProblemTypeUrls.BadRequest,
             Title = "One or more validation errors occurred.",
             Status = StatusCodes.Status400BadRequest,
             Detail = "See the errors property for details.",
@@ -70,7 +71,7 @@ public class ExceptionHandlingMiddleware
 
         var problemDetails = new ProblemDetails
         {
-            Type = "https://tools.ietf.org/html/rfc7231#section-6.5.4",
+            Type = ProblemTypeUrls.NotFound,
             Title = "Resource not found.",
             Status = StatusCodes.Status404NotFound,
             Detail = ex.Message,
@@ -88,7 +89,7 @@ public class ExceptionHandlingMiddleware
 
         var problemDetails = new ProblemDetails
         {
-            Type = "https://tools.ietf.org/html/rfc7231#section-6.5.1",
+            Type = ProblemTypeUrls.BadRequest,
             Title = "Invalid operation.",
             Status = StatusCodes.Status400BadRequest,
             Detail = ex.Message,
@@ -106,7 +107,7 @@ public class ExceptionHandlingMiddleware
 
         var problemDetails = new ProblemDetails
         {
-            Type = "https://tools.ietf.org/html/rfc7231#section-6.6.1",
+            Type = ProblemTypeUrls.InternalServerError,
             Title = "An unexpected error occurred.",
             Status = StatusCodes.Status500InternalServerError,
             Detail = "Please try again later or contact support.",
