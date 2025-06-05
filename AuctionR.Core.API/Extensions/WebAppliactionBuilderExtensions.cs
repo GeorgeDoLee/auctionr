@@ -19,7 +19,7 @@ public static class WebApplicationBuilderExtensions
         builder.AddSerilogLogging();
         builder.AddRateLimiting();
         builder.AddJwtAuthentication();
-        builder.Services.AddAuthorization();
+        builder.AddAuthorizationWithPolicies();
 
         return builder;
     }
@@ -123,6 +123,40 @@ public static class WebApplicationBuilderExtensions
                 ValidAudience = audience,
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key))
             };
+        });
+
+        return builder;
+    }
+
+    private static WebApplicationBuilder AddAuthorizationWithPolicies(this WebApplicationBuilder builder)
+    {
+        builder.Services.AddAuthorization(options =>
+        {
+            var permissionsSection = builder.Configuration
+                                        .GetSection("Permissions")
+                                        .GetChildren();
+
+            foreach (var resourceSection in permissionsSection)
+            {
+                var resourceName = resourceSection.Key;
+                var resourceChildren = resourceSection.GetChildren();
+
+                foreach (var action in resourceChildren)
+                {
+                    var actionName = action.Key;
+                    var permissionValue = action.Value;
+
+                    if (!string.IsNullOrWhiteSpace(permissionValue))
+                    {
+                        var policyName = $"{resourceName}.{actionName}".ToLowerInvariant();
+
+                        options.AddPolicy(policyName, policy =>
+                        {
+                            policy.RequireClaim("permissions", permissionValue);
+                        });
+                    }
+                }
+            }
         });
 
         return builder;
