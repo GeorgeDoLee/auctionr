@@ -1,4 +1,5 @@
-﻿using AuctionR.Core.API.Hubs;
+﻿using AuctionR.Core.API.Constants;
+using AuctionR.Core.API.Hubs;
 using AuctionR.Core.Application.Commands.Bids.Create;
 using AuctionR.Core.Application.Commands.Bids.Retract;
 using AuctionR.Core.Application.Contracts.HubClients;
@@ -7,6 +8,7 @@ using AuctionR.Core.Application.Queries.Bids.Get;
 using AuctionR.Core.Application.Queries.Bids.GetByAuction;
 using AuctionR.Shared.Responses;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.AspNetCore.SignalR;
@@ -30,7 +32,12 @@ public class BidsController : ControllerBase
     }
 
     [HttpGet("{id}")]
+    [Authorize(Policy = Permissions.BidsRead)]
     [ActionName(nameof(GetBidByIdAsync))]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -46,6 +53,11 @@ public class BidsController : ControllerBase
     }
 
     [HttpGet]
+    [Authorize(Policy = Permissions.BidsRead)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> GetBidsByAuctionIdAsync(
@@ -58,6 +70,11 @@ public class BidsController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Policy = Permissions.BidsCreate)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -84,6 +101,11 @@ public class BidsController : ControllerBase
     }
 
     [HttpPost("{id}/retract")]
+    [Authorize(Policy = Permissions.BidsRetract)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
