@@ -14,8 +14,8 @@ public class SearchAuctionsQueryValidator : AbstractValidator<SearchAuctionsQuer
             .GreaterThan(0).When(x => x.OwnerId.HasValue)
             .WithMessage("OwnerId must be greater than 0.");
 
-        RuleFor(x => x.MaximumStartingPrice)
-            .GreaterThanOrEqualTo(0).When(x => x.MaximumStartingPrice.HasValue)
+        RuleFor(x => x.MaxStartingPrice)
+            .GreaterThanOrEqualTo(0).When(x => x.MaxStartingPrice.HasValue)
             .WithMessage("MaximumStartingPrice must be 0 or more.");
 
         RuleFor(x => x.Currency)
@@ -30,13 +30,13 @@ public class SearchAuctionsQueryValidator : AbstractValidator<SearchAuctionsQuer
             .MaximumLength(2000)
             .WithMessage("Description cannot be longer than 2000 characters.");
 
-        RuleFor(x => x.MinimumStartTime)
-            .LessThanOrEqualTo(x => x.MaximumEndTime!.Value)
-            .When(x => x.MinimumStartTime.HasValue && x.MaximumStartingPrice.HasValue)
+        RuleFor(x => x.MinStartTime)
+            .LessThanOrEqualTo(x => x.MaxEndTime!.Value)
+            .When(x => x.MinStartTime.HasValue && x.MaxStartingPrice.HasValue)
             .WithMessage("MinimumStartTime must be earlier than or equal to MaximumEndTime.");
 
-        RuleFor(x => x.MaximumCurrentBidAmount)
-            .GreaterThanOrEqualTo(0).When(x => x.MaximumCurrentBidAmount.HasValue)
+        RuleFor(x => x.MaxCurrentBidAmount)
+            .GreaterThanOrEqualTo(0).When(x => x.MaxCurrentBidAmount.HasValue)
             .WithMessage("HighestBidAmount must be 0 or more.");
 
         RuleFor(x => x.PageNumber)

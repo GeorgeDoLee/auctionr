@@ -28,11 +28,11 @@ public class SearchAuctionsQueryHandler : IRequestHandler<SearchAuctionsQuery, I
            (!query.OwnerId.HasValue || a.OwnerId == query.OwnerId) &&
            (string.IsNullOrEmpty(query.Title) || a.Title!.Contains(query.Title)) &&
            (string.IsNullOrEmpty(query.Description) || a.Description!.Contains(query.Description)) &&
-           (!query.MaximumStartingPrice.HasValue || a.StartingPrice <= query.MaximumStartingPrice) &&
+           (!query.MaxStartingPrice.HasValue || a.StartingPrice <= query.MaxStartingPrice) &&
            (string.IsNullOrEmpty(query.Currency) || a.Currency == query.Currency) &&
-           (!query.MinimumStartTime.HasValue || a.StartTime >= query.MinimumStartTime) &&
-           (!query.MaximumEndTime.HasValue || a.EndTime <= query.MaximumEndTime) &&
-           (!query.MaximumCurrentBidAmount.HasValue || a.HighestBidAmount <= query.MaximumCurrentBidAmount) &&
+           (!query.MinStartTime.HasValue || a.StartTime >= query.MinStartTime) &&
+           (!query.MaxEndTime.HasValue || a.EndTime <= query.MaxEndTime) &&
+           (!query.MaxCurrentBidAmount.HasValue || a.HighestBidAmount <= query.MaxCurrentBidAmount) &&
            (!query.Status.HasValue || a.Status == query.Status)
        );
 

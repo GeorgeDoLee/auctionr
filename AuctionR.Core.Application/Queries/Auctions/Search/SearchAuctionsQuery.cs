@@ -12,13 +12,13 @@ public class SearchAuctionsQuery : IRequest<IEnumerable<AuctionModel>>
     public string? Title { get; set; }
     public string? Description { get; set; }
 
-    public decimal? MaximumStartingPrice { get; set; }
+    public decimal? MaxStartingPrice { get; set; }
     public string? Currency { get; set; }
 
-    public DateTime? MinimumStartTime { get; set; }
-    public DateTime? MaximumEndTime { get; set; }
+    public DateTime? MinStartTime { get; set; }
+    public DateTime? MaxEndTime { get; set; }
 
-    public decimal? MaximumCurrentBidAmount { get; set; } 
+    public decimal? MaxCurrentBidAmount { get; set; } 
 
     public AuctionStatus? Status { get; set; }
 
