@@ -1,4 +1,6 @@
-﻿using AuctionR.Core.Domain.Enums;
+﻿using AuctionR.Core.Application.Common.Guards;
+using AuctionR.Core.Domain.Entities;
+using AuctionR.Core.Domain.Enums;
 using AuctionR.Core.Domain.Exceptions;
 using AuctionR.Core.Domain.Interfaces;
 using MediatR;
@@ -21,19 +23,30 @@ public class StartAuctionCommandHandler : IRequestHandler<StartAuctionCommand, b
 
     public async Task<bool> Handle(StartAuctionCommand command, CancellationToken ct)
     {
-        _logger.LogInformation("Tryin to manually start auction with id: {auctionId}", command.Id);
-        var auction = await _unitOfWork.Auctions.GetAsync(command.Id, ct);
+        _logger.LogInformation("Tryin to manually start auction with id: {auctionId}", command.AuctionId);
+        var auction = await _unitOfWork.Auctions.GetAsync(command.AuctionId, ct);
 
         if (auction == null)
         {
-            _logger.LogWarning("Auction with id: {auctionId} could not be found.", command.Id);
-            throw new NotFoundException($"Auction with id: {command.Id} could not be found.");
+            _logger.LogWarning("Auction with id: {auctionId} could not be found.", command.AuctionId);
+            throw new NotFoundException($"Auction with id: {command.AuctionId} could not be found.");
         }
+
+        if (auction.OwnerId != command.UserId)
+        {
+            _logger.LogWarning(
+               "auction owner id: {bidderId} did not match with incoming request user id: {userId}.",
+               auction.OwnerId, command.UserId);
+
+            throw new ForbiddenException("You are not authorized to modify this auction.");
+        }
+
+        Guard.EnsureUserOwnsResource(auction.OwnerId, command.UserId, nameof(auction), _logger);
 
         auction.Start();
         await _unitOfWork.Complete(ct);
 
-        _logger.LogInformation("Auction with id: {auctionId} started successfully.", command.Id);
+        _logger.LogInformation("Auction with id: {auctionId} started successfully.", command.AuctionId);
         return true;
     }
 }

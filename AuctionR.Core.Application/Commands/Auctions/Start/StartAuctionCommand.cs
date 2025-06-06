@@ -4,10 +4,13 @@ namespace AuctionR.Core.Application.Commands.Auctions.Start;
 
 public class StartAuctionCommand : IRequest<bool>
 {
-    public StartAuctionCommand(int id)
+    public StartAuctionCommand(int auctionId, int userId)
     {
-        Id = id;    
+        AuctionId = auctionId;
+        UserId = userId;
     }
 
-    public int Id { get; set; }
+    public int AuctionId { get; set; }
+
+    public int UserId { get; set; }
 }

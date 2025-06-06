@@ -4,10 +4,13 @@ namespace AuctionR.Core.Application.Commands.Auctions.End;
 
 public class EndAuctionCommand : IRequest<bool>
 {
-    public EndAuctionCommand(int id)
+    public EndAuctionCommand(int auctionId, int userId)
     {
-        Id = id;
+        AuctionId = auctionId;
+        UserId = userId;
     }
 
-    public int Id { get; set; }
+    public int AuctionId { get; set; }
+
+    public int UserId { get; set; }
 }

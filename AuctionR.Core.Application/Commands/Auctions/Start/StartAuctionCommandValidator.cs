@@ -7,6 +7,8 @@ public class StartAuctionCommandValidator : AbstractValidator<StartAuctionComman
 {
     public StartAuctionCommandValidator()
     {
-        RuleFor(x => x.Id).ValidId();
+        RuleFor(x => x.AuctionId).ValidId("AuctionId");
+
+        RuleFor(x => x.UserId).ValidId("AuctionId");
     }
 }

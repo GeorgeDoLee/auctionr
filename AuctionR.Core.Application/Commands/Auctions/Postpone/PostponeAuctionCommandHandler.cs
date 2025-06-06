@@ -1,4 +1,5 @@
-﻿using AuctionR.Core.Domain.Exceptions;
+﻿using AuctionR.Core.Application.Common.Guards;
+using AuctionR.Core.Domain.Exceptions;
 using AuctionR.Core.Domain.Interfaces;
 using MediatR;
 using Microsoft.Extensions.Logging;
@@ -20,19 +21,21 @@ public class PostponeAuctionCommandHandler : IRequestHandler<PostponeAuctionComm
 
     public async Task<bool> Handle(PostponeAuctionCommand command, CancellationToken ct)
     {
-        _logger.LogInformation("Trying to postpone auction with id: {auctionId}.", command.Id);
-        var auction = await _unitOfWork.Auctions.GetAsync(command.Id);
+        _logger.LogInformation("Trying to postpone auction with id: {auctionId}.", command.AuctionId);
+        var auction = await _unitOfWork.Auctions.GetAsync(command.AuctionId);
 
         if (auction == null)
         {
-            _logger.LogWarning("Auction with id: {auctionId} could not be found.", command.Id);
-            throw new NotFoundException($"Auction with id: {command.Id} could not be found.");
+            _logger.LogWarning("Auction with id: {auctionId} could not be found.", command.AuctionId);
+            throw new NotFoundException($"Auction with id: {command.AuctionId} could not be found.");
         }
+
+        Guard.EnsureUserOwnsResource(auction.OwnerId, command.UserId, nameof(auction), _logger);
 
         auction.Postpone(command.StartTime, command.EndTime);
         await _unitOfWork.Complete(ct);
 
-        _logger.LogInformation("Auction with id: {auctionId} postponed succussfully.", command.Id);
+        _logger.LogInformation("Auction with id: {auctionId} postponed succussfully.", command.AuctionId);
         return true;
     }
 }

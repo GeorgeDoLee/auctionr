@@ -6,13 +6,13 @@ namespace AuctionR.Core.Application.Commands.Bids.Retract;
 
 public class RetractBidCommand : IRequest<BidRetractedResponse>
 {
-    public RetractBidCommand(int bidId, int bidderId)
+    public RetractBidCommand(int bidId, int userId)
     {
         BidId = bidId;
-        BidderId = bidderId;
+        UserId = userId;
     }
 
     public int BidId { get; set; }
 
-    public int BidderId { get; set; }
+    public int UserId { get; set; }
 }

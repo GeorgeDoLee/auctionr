@@ -1,4 +1,5 @@
-﻿using AuctionR.Core.Application.Contracts.Responses;
+﻿using AuctionR.Core.Application.Common.Guards;
+using AuctionR.Core.Application.Contracts.Responses;
 using AuctionR.Core.Domain.Exceptions;
 using AuctionR.Core.Domain.Interfaces;
 using AuctionR.Core.Infrastructure.Settings;
@@ -36,13 +37,7 @@ public class RetractBidCommandHandler : IRequestHandler<RetractBidCommand, BidRe
             throw new NotFoundException($"Bid with id: {command.BidId} could not be found.");
         }
 
-        if (bid.BidderId != command.BidderId)
-        {
-            _logger.LogWarning(
-                "bidder id: {bidderId} did not match with incoming request user id: {userId}.",
-                bid.BidderId, command.BidderId);
-            throw new InvalidOperationException($"Bid id doesnt match incoming request user id.");
-        }
+        Guard.EnsureUserOwnsResource(bid.BidderId, command.UserId, nameof(bid), _logger);
 
         if (!bid.IsRetractable(_bidSettings.RetractableSeconds))
         {

@@ -4,10 +4,13 @@ namespace AuctionR.Core.Application.Commands.Auctions.Cancel;
 
 public class CancelAuctionCommand : IRequest<bool>
 {
-    public CancelAuctionCommand(int id)
+    public CancelAuctionCommand(int auctionId, int userId)
     {
-        Id = id;
+        AuctionId = auctionId;
+        UserId = userId;
     }
 
-    public int Id { get; set; }
+    public int AuctionId { get; set; }
+
+    public int UserId { get; set; }
 }

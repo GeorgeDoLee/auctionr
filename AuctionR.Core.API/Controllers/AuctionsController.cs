@@ -13,6 +13,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
+using System.Security.Claims;
 
 namespace AuctionR.Core.API.Controllers;
 
@@ -103,7 +104,9 @@ public class AuctionsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> StartAuctionAsync([FromRoute] int id, CancellationToken ct)
     {
-        _ = await _mediator.Send(new StartAuctionCommand(id), ct);
+        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+
+        _ = await _mediator.Send(new StartAuctionCommand(id, userId), ct);
 
         return Ok(ApiResponse<object?>
             .SuccessResponse($"Auction with id: {id} started successfully."));
@@ -116,7 +119,9 @@ public class AuctionsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> EndAuctionAsync([FromRoute] int id, CancellationToken ct)
     {
-        _ = await _mediator.Send(new EndAuctionCommand(id), ct);
+        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+
+        _ = await _mediator.Send(new EndAuctionCommand(id, userId), ct);
 
         return Ok(ApiResponse<object?>
             .SuccessResponse($"Auction with id: {id} ended successfully."));
@@ -129,7 +134,9 @@ public class AuctionsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> CancelAuctionAsync([FromRoute] int id, CancellationToken ct)
     {
-        _ = await _mediator.Send(new CancelAuctionCommand(id), ct);
+        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+
+        _ = await _mediator.Send(new CancelAuctionCommand(id, userId), ct);
 
         return Ok(ApiResponse<object?>
             .SuccessResponse($"Auction with id: {id} cancelled successfully."));
@@ -147,7 +154,7 @@ public class AuctionsController : ControllerBase
         [FromBody] PostponeAuctionCommand command, 
         CancellationToken ct)
     {
-        if (id != command.Id)
+        if (id != command.AuctionId)
         {
             throw new ArgumentException("URL Id and body Id do not match.");
         }
