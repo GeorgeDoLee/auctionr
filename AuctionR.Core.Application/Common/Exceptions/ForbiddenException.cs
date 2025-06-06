@@ -1,4 +1,4 @@
-﻿namespace AuctionR.Core.Domain.Exceptions;
+﻿namespace AuctionR.Core.Application.Common.Exceptions;
 
 public class ForbiddenException : Exception
 {
