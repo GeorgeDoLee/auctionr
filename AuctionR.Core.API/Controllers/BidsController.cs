@@ -53,17 +53,17 @@ public class BidsController : ControllerBase
             .SuccessResponse($"Bid with id: {id} fetched successfully.", response));
     }
 
-    [HttpGet]
+    [HttpGet("search")]
     [Authorize(Policy = Permissions.BidsRead)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> GetBidsByAuctionIdAsync(
-        [FromQuery] GetBidsByAuctionQuery query, CancellationToken ct)
+        [FromQuery] SearchBidsQuery query, CancellationToken ct)
     {
         var response = await _mediator.Send(query, ct);
 
         return Ok(ApiResponse<IEnumerable<BidModel>>
-            .SuccessResponse($"Bids for auction  with Id: {query.AuctionId} fetched successfully.", response));
+            .SuccessResponse($"Bids fetched successfully.", response));
     }
 
     [HttpPost]
