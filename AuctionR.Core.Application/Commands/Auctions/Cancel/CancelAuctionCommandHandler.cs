@@ -1,6 +1,4 @@
 ﻿using AuctionR.Core.Application.Common.Guards;
-using AuctionR.Core.Domain.Enums;
-using AuctionR.Core.Domain.Exceptions;
 using AuctionR.Core.Domain.Interfaces;
 using MediatR;
 using Microsoft.Extensions.Logging;
@@ -25,13 +23,8 @@ public class CancelAuctionCommandHandler : IRequestHandler<CancelAuctionCommand,
         _logger.LogInformation("Trying to cancel an auction with id: {auctionId}", command.AuctionId);
         var auction = await _unitOfWork.Auctions.GetAsync(command.AuctionId, ct);
 
-        if (auction == null)
-        {
-            _logger.LogWarning("Auction with id: {auctionId} could not be found.", command.AuctionId);
-            throw new NotFoundException($"Auction with id: {command.AuctionId} could not be found.");
-        }
-
-        Guard.EnsureUserOwnsResource(auction.OwnerId, command.UserId, nameof(auction), _logger);
+        Guard.EnsureFound(auction, nameof(auction), command.AuctionId, _logger);
+        Guard.EnsureUserOwnsResource(auction!.OwnerId, command.UserId, nameof(auction), _logger);
 
         auction.Cancel();
         await _unitOfWork.Complete(ct);

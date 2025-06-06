@@ -1,5 +1,5 @@
-﻿using AuctionR.Core.Application.Contracts.Models;
-using AuctionR.Core.Domain.Exceptions;
+﻿using AuctionR.Core.Application.Common.Guards;
+using AuctionR.Core.Application.Contracts.Models;
 using AuctionR.Core.Domain.Interfaces;
 using Mapster;
 using MediatR;
@@ -24,11 +24,7 @@ public class GetAuctionQueryHandler : IRequestHandler<GetAuctionQuery, AuctionMo
         _logger.LogInformation("Trying to fetch auction with id: {id}", query.Id);
         var auction = await _unitOfWork.Auctions.GetAsync(query.Id, ct);
 
-        if (auction == null)
-        {
-            _logger.LogWarning("Auction with id: {id} could not be found", query.Id);
-            throw new NotFoundException($"auction with id: {query.Id} not found");
-        }
+        Guard.EnsureFound(auction, nameof(auction), query.Id, _logger);
 
         _logger.LogInformation("Auction with id: {id} fetched successfully", query.Id);
         return auction.Adapt<AuctionModel>();

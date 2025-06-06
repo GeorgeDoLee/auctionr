@@ -1,6 +1,5 @@
 ﻿using AuctionR.Core.Application.Common.Guards;
 using AuctionR.Core.Application.Contracts.Responses;
-using AuctionR.Core.Domain.Exceptions;
 using AuctionR.Core.Domain.Interfaces;
 using AuctionR.Core.Infrastructure.Settings;
 using Mapster;
@@ -31,13 +30,8 @@ public class RetractBidCommandHandler : IRequestHandler<RetractBidCommand, BidRe
         _logger.LogInformation("trying to retract bid with Id {bidId}", command.BidId);
         var bid = await _unitOfWork.Bids.GetAsync(command.BidId, ct);
 
-        if (bid == null)
-        {
-            _logger.LogWarning("Bid with Id: {bidId} could not be found.", command.BidId);
-            throw new NotFoundException($"Bid with id: {command.BidId} could not be found.");
-        }
-
-        Guard.EnsureUserOwnsResource(bid.BidderId, command.UserId, nameof(bid), _logger);
+        Guard.EnsureFound(bid, nameof(bid), command.BidId, _logger);
+        Guard.EnsureUserOwnsResource(bid!.BidderId, command.UserId, nameof(bid), _logger);
 
         if (!bid.IsRetractable(_bidSettings.RetractableSeconds))
         {
@@ -47,12 +41,9 @@ public class RetractBidCommandHandler : IRequestHandler<RetractBidCommand, BidRe
 
         var auction = await _unitOfWork.Auctions.GetWithBidsAsync(bid.AuctionId, ct);
 
-        if (auction == null)
-        {
-            throw new NotFoundException($"Auction associated with bid Id: {bid.Id} could not be found.");
-        }
+        Guard.EnsureFound(auction, nameof(auction), bid.AuctionId, _logger);
 
-        var previousHighestBid = auction.RetractBid(bid);
+        var previousHighestBid = auction!.RetractBid(bid);
 
         _unitOfWork.Bids.Remove(bid);
         await _unitOfWork.Complete(ct);

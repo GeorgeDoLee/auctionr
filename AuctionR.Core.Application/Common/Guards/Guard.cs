@@ -16,4 +16,13 @@ public static class Guard
             throw new ForbiddenException($"You are not authorized to modify this {resourceName.ToLower()}.");
         }
     }
+
+    public static void EnsureFound<T>(T? resource, string resourceName, int resourceId, ILogger logger)
+    {
+        if (resource == null)
+        {
+            logger.LogWarning("{resource} with id: {resourceId} could not be found.", resourceName, resourceId);
+            throw new NotFoundException($"{resourceName} with id: {resourceId} could not be found.");
+        }
+    }
 }

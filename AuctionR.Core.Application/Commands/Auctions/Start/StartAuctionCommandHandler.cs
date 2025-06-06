@@ -26,22 +26,8 @@ public class StartAuctionCommandHandler : IRequestHandler<StartAuctionCommand, b
         _logger.LogInformation("Tryin to manually start auction with id: {auctionId}", command.AuctionId);
         var auction = await _unitOfWork.Auctions.GetAsync(command.AuctionId, ct);
 
-        if (auction == null)
-        {
-            _logger.LogWarning("Auction with id: {auctionId} could not be found.", command.AuctionId);
-            throw new NotFoundException($"Auction with id: {command.AuctionId} could not be found.");
-        }
-
-        if (auction.OwnerId != command.UserId)
-        {
-            _logger.LogWarning(
-               "auction owner id: {bidderId} did not match with incoming request user id: {userId}.",
-               auction.OwnerId, command.UserId);
-
-            throw new ForbiddenException("You are not authorized to modify this auction.");
-        }
-
-        Guard.EnsureUserOwnsResource(auction.OwnerId, command.UserId, nameof(auction), _logger);
+        Guard.EnsureFound(auction, nameof(auction), command.AuctionId, _logger);
+        Guard.EnsureUserOwnsResource(auction!.OwnerId, command.UserId, nameof(auction), _logger);
 
         auction.Start();
         await _unitOfWork.Complete(ct);

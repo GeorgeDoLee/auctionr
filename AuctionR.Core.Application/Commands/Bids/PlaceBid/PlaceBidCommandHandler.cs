@@ -1,7 +1,7 @@
 ﻿using AuctionR.Core.Application.Commands.Bids.Create;
+using AuctionR.Core.Application.Common.Guards;
 using AuctionR.Core.Application.Contracts.Models;
 using AuctionR.Core.Domain.Entities;
-using AuctionR.Core.Domain.Exceptions;
 using AuctionR.Core.Domain.Interfaces;
 using Mapster;
 using MediatR;
@@ -26,16 +26,11 @@ public class PlaceBidCommandHandler : IRequestHandler<PlaceBidCommand, BidModel>
         _logger.LogInformation("Trying to place bid with properties: {@bid}", command);
         var auction = await _unitOfWork.Auctions.GetAsync(command.AuctionId, ct);
 
-        if (auction == null)
-        {
-            _logger.LogWarning("Auction with id: {auctionId} could not be found.", command.AuctionId);
-            throw new NotFoundException($"Auction with id: {command.AuctionId} could not be found.");
-        }
+        Guard.EnsureFound(auction, nameof(auction), command.AuctionId, _logger);
 
         var newBid = command.Adapt<Bid>();
 
-        auction.PlaceBid(newBid);
-
+        auction!.PlaceBid(newBid);
         await _unitOfWork.Bids.AddAsync(newBid, ct);
         await _unitOfWork.Complete(ct);
 
