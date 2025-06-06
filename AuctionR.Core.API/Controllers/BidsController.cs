@@ -1,11 +1,11 @@
 ﻿using AuctionR.Core.API.Constants;
 using AuctionR.Core.API.Hubs;
-using AuctionR.Core.Application.Commands.Bids.Create;
-using AuctionR.Core.Application.Commands.Bids.Retract;
 using AuctionR.Core.Application.Contracts.HubClients;
 using AuctionR.Core.Application.Contracts.Models;
-using AuctionR.Core.Application.Queries.Bids.Get;
-using AuctionR.Core.Application.Queries.Bids.GetByAuction;
+using AuctionR.Core.Application.Features.Bids.Commands.PlaceBid;
+using AuctionR.Core.Application.Features.Bids.Commands.Retract;
+using AuctionR.Core.Application.Features.Bids.Queries.Get;
+using AuctionR.Core.Application.Features.Bids.Queries.Search;
 using AuctionR.Shared.Responses;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;

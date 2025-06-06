@@ -1,5 +1,5 @@
-﻿using AuctionR.Core.Application.Commands.Bids.Create;
-using AuctionR.Core.Application.Contracts.Responses;
+﻿using AuctionR.Core.Application.Contracts.Responses;
+using AuctionR.Core.Application.Features.Bids.Commands.PlaceBid;
 using AuctionR.Core.Domain.Entities;
 using Mapster;
 

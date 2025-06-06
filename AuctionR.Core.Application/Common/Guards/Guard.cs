@@ -1,4 +1,4 @@
-﻿using AuctionR.Core.Domain.Exceptions;
+﻿using AuctionR.Core.Application.Common.Exceptions;
 using Microsoft.Extensions.Logging;
 
 namespace AuctionR.Core.Application.Common.Guards;

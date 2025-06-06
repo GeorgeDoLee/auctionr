@@ -1,6 +1,5 @@
 ﻿using AuctionR.Core.API.ExceptionHandling;
 using AuctionR.Core.Application.Common.Exceptions;
-using AuctionR.Core.Domain.Exceptions;
 using FluentValidation;
 
 namespace AuctionR.Core.API.Middlewares;

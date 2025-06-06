@@ -1,7 +1,6 @@
 ﻿using AuctionR.Core.API.ExceptionHandling;
-using AuctionR.Core.Domain.Exceptions;
+using AuctionR.Core.Application.Common.Exceptions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;

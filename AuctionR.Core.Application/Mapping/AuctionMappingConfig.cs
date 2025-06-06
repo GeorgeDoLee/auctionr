@@ -1,5 +1,5 @@
-﻿using AuctionR.Core.Application.Commands.Auctions.Create;
-using AuctionR.Core.Application.Contracts.Models;
+﻿using AuctionR.Core.Application.Contracts.Models;
+using AuctionR.Core.Application.Features.Auctions.Commands.Create;
 using AuctionR.Core.Domain.Entities;
 using AuctionR.Core.Domain.Enums;
 using Mapster;
