@@ -41,6 +41,11 @@ public class ExceptionHandlingMiddleware
             _logger.LogError(ex, "Invalid operation: {Message}", ex.Message);
             await ExceptionHandler.HandleInvalidOperationExceptionAsync(context, ex);
         }
+        catch (ArgumentException ex)
+        {
+            _logger.LogError(ex, "Argument exception: {Message}", ex.Message);
+            await ExceptionHandler.HandleArgumentExceptionAsync(context, ex);
+        }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Unhandled exception occurred");

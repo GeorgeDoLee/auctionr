@@ -111,6 +111,23 @@ public static class ExceptionHandler
         await context.Response.WriteAsJsonAsync(problem);
     }
 
+    public static async Task HandleArgumentExceptionAsync(HttpContext context, ArgumentException ex)
+    {
+        var problemDetails = new ProblemDetails
+        {
+            Type = ProblemTypeUrls.BadRequest,
+            Title = "Invalid argument.",
+            Status = StatusCodes.Status400BadRequest,
+            Detail = ex.Message,
+            Instance = context.Request.Path
+        };
+
+        context.Response.StatusCode = StatusCodes.Status400BadRequest;
+        context.Response.ContentType = "application/problem+json";
+        await context.Response.WriteAsJsonAsync(problemDetails);
+    }
+
+
     public static async Task HandleUnexpectedExceptionAsync(HttpContext context)
     {
         var problemDetails = new ProblemDetails

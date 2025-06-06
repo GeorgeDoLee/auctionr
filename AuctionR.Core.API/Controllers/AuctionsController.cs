@@ -85,8 +85,8 @@ public class AuctionsController : ControllerBase
 
         if (response == null)
         {
-            return BadRequest(ApiResponse<object?>
-                .FailResponse("Auction with this product already exists. You can add another auction if you cancel existing one"));
+            throw new InvalidOperationException(
+                "Auction with this product already exists. You can add another auction if you cancel existing one.");
         }
 
         return CreatedAtAction(
@@ -149,8 +149,7 @@ public class AuctionsController : ControllerBase
     {
         if (id != command.Id)
         {
-            return BadRequest(ApiResponse<object?>
-                .FailResponse("URL Id and body Id do not match."));
+            throw new ArgumentException("URL Id and body Id do not match.");
         }
 
         _ = await _mediator.Send(command, ct);
