@@ -26,7 +26,7 @@ public class GetAllAuctionsQueryHandler :
             query.PageNumber, query.PageSize);
 
         var auctions = await _unitOfWork.Auctions
-            .GetAllAsync(query.PageNumber, query.PageSize, ct);
+            .GetPagedAsync(query.PageNumber, query.PageSize, null, ct);
 
         _logger.LogInformation("Auctions on page {pageNumber} with size {pageSize} fetched successfully.",
             query.PageNumber, query.PageSize);

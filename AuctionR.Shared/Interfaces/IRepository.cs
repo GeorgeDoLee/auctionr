@@ -6,8 +6,11 @@ public interface IRepository<T>
 {
     Task<T?> GetAsync(int id, CancellationToken ct = default);
 
-    Task<IEnumerable<T>> GetAllAsync(
-        int pageNumber, int pageSize, CancellationToken ct = default);
+    Task<IEnumerable<T>> GetPagedAsync(
+        int pageNumber,
+        int pageSize,
+        IQueryable<T>? queryabe = null,
+        CancellationToken ct = default);
 
     Task<IEnumerable<T>> FindAsync(
         Expression<Func<T, bool>> predicate, CancellationToken ct = default);

@@ -1,8 +1,6 @@
 ﻿using AuctionR.Shared.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using System.Linq.Expressions;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace AuctionR.Shared.Repositories;
 
@@ -37,13 +35,21 @@ public class Repository<TContext, TEntity> : IRepository<TEntity>
             .FindAsync(id, ct);
     }
 
-    public virtual async Task<IEnumerable<TEntity>> GetAllAsync(
-        int pageNumber, int pageSize, CancellationToken ct = default)
+    public virtual async Task<IEnumerable<TEntity>> GetPagedAsync(
+        int pageNumber, 
+        int pageSize, 
+        IQueryable<TEntity>? queryabe = null, 
+        CancellationToken ct = default)
     {
-        return await _context.Set<TEntity>()
+        var query = queryabe == null
+            ? _context.Set<TEntity>().AsQueryable()
+            : queryabe;
+
+        return await query
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync(ct);
+        
     }
 
     public virtual void Remove(TEntity entity)
