@@ -7,6 +7,7 @@ using AuctionR.Core.Application.Commands.Auctions.Start;
 using AuctionR.Core.Application.Contracts.Models;
 using AuctionR.Core.Application.Queries.Auctions.Get;
 using AuctionR.Core.Application.Queries.Auctions.GetAll;
+using AuctionR.Core.Application.Queries.Auctions.Search;
 using AuctionR.Shared.Responses;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -58,6 +59,19 @@ public class AuctionsController : ControllerBase
         
         return Ok(ApiResponse<AuctionModel>
             .SuccessResponse($"Auction with id: {id} fetched successfully.", response));
+    }
+
+    [HttpGet("search")]
+    [Authorize(Policy = Permissions.AuctionsRead)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> SearchAuctionAsync(
+        [FromQuery] SearchAuctionsQuery query, CancellationToken ct)
+    {
+        var response = await _mediator.Send(query, ct);
+
+        return Ok(ApiResponse<IEnumerable<AuctionModel>>
+            .SuccessResponse($"Auctions fetched successfully.", response));
     }
 
     [HttpPost]
