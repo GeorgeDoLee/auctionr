@@ -1,10 +1,11 @@
 ﻿using AuctionR.Core.Domain.Enums;
+using AuctionR.Core.Domain.Events;
+using AuctionR.Core.Domain.Primitives;
 
 namespace AuctionR.Core.Domain.Entities;
 
-public class Auction
+public class Auction : Entity
 {
-    public int Id { get; set; }
     public int ProductId { get; set; }
     public int OwnerId { get; set; }
 
@@ -47,6 +48,8 @@ public class Auction
 
         StartTime = DateTime.UtcNow;
         Status = AuctionStatus.Active;
+
+        Raise(new AuctionStartedEvent(Guid.NewGuid(), Id));
     }
 
     public void End()
@@ -58,6 +61,8 @@ public class Auction
 
         EndTime = DateTime.UtcNow;
         Status = AuctionStatus.Ended;
+
+        Raise(new AuctionEndedEvent(Guid.NewGuid(), Id));
     }
 
     public void Cancel()
@@ -100,6 +105,8 @@ public class Auction
         HighestBidAmount = bid.Amount;
         HighestBidderId = bid.BidderId;
         Bids.Add(bid);
+
+        Raise(new BidPlacedEvent(Guid.NewGuid(), Id, bid.Id));
     }
 
     public Bid? RetractBid(Bid bid)
@@ -122,6 +129,8 @@ public class Auction
         var previousHighestBid = Bids.MaxBy(b => b.Amount)!;
         HighestBidAmount = previousHighestBid.Amount;
         HighestBidderId = previousHighestBid.BidderId;
+
+        Raise(new BidRetractedEvent(Guid.NewGuid(), Id, bid.Id));
 
         return previousHighestBid;
     }

@@ -1,9 +1,9 @@
-﻿namespace AuctionR.Core.Domain.Entities;
+﻿using AuctionR.Core.Domain.Primitives;
 
-public class Bid
+namespace AuctionR.Core.Domain.Entities;
+
+public class Bid : Entity
 {
-    public int Id { get; set; }
-
     public int AuctionId { get; set; }
 
     public int BidderId { get; set; }
