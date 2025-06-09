@@ -3,7 +3,6 @@ using AuctionR.Core.API.Hubs;
 using AuctionR.Core.Application.Contracts.HubClients;
 using AuctionR.Core.Application.Contracts.Models;
 using AuctionR.Core.Application.Features.Bids.Commands.PlaceBid;
-using AuctionR.Core.Application.Features.Bids.Commands.Retract;
 using AuctionR.Core.Application.Features.Bids.Queries.Get;
 using AuctionR.Core.Application.Features.Bids.Queries.Search;
 using AuctionR.Shared.Responses;
@@ -12,7 +11,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.AspNetCore.SignalR;
-using System.Security.Claims;
 
 namespace AuctionR.Core.API.Controllers;
 
@@ -82,34 +80,10 @@ public class BidsController : ControllerBase
                 .FailResponse("Bid coult not be placed."));
         }
 
-        await _hubContext.Clients
-            .Group($"auction-{response.AuctionId}")
-            .BidPlaced(response);
-
         return CreatedAtAction(
                 nameof(GetBidByIdAsync),
                 new { id = response.Id },
                 ApiResponse<BidModel>.SuccessResponse("Bid placed successfully.", response)
         );
-    }
-
-    [HttpPost("{id}/retract")]
-    [Authorize(Policy = Permissions.BidsRetract)]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> RetractBidAsync(
-        [FromRoute] int id, CancellationToken ct)
-    {
-        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-
-        var response = await _mediator.Send(new RetractBidCommand(id, userId), ct);
-
-        await _hubContext.Clients
-            .Group($"auction-{response.AuctionId}")
-            .BidRetracted(response);
-
-        return Ok(ApiResponse<object?>
-            .FailResponse($"Bid with id: {id} retracted successfully."));
     }
 }
