@@ -1,6 +1,5 @@
 ﻿using AuctionR.Core.API.Constants;
 using AuctionR.Core.Application.Common.Exceptions;
-using AuctionR.Core.Application.Common.Exceptions;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 

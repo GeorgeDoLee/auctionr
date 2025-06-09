@@ -25,7 +25,7 @@ public class Auction : Entity
 
     public AuctionStatus Status { get; set; }
 
-    public ICollection<Bid> Bids { get; set; } = new List<Bid>();
+    public ICollection<Bid> Bids { get; set; } = [];
 
 
     public void Postpone(DateTime startTime, DateTime endTime)

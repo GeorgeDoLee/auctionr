@@ -7,8 +7,8 @@ internal static class DummyData
 {
     internal static List<Auction> GetAuctions()
     {
-        return new List<Auction>
-        {
+        return
+        [
             new()
             {
                 ProductId = 1,
@@ -107,13 +107,13 @@ internal static class DummyData
                 CreatedAt = DateTime.UtcNow,
                 Status = AuctionStatus.Pending
             },
-        };
+        ];
     }
 
     internal static List<Bid> GetBids(List<Auction> auctions)
     {
-        return new List<Bid>
-        {
+        return
+        [
             new() { AuctionId = auctions[0].Id, BidderId = 2, Amount = 110, Timestamp = DateTime.UtcNow.AddDays(-1) },
             new() { AuctionId = auctions[0].Id, BidderId = 3, Amount = 120, Timestamp = DateTime.UtcNow.AddDays(-1).AddHours(2) },
             new() { AuctionId = auctions[1].Id, BidderId = 4, Amount = 160, Timestamp = DateTime.UtcNow.AddDays(-2) },
@@ -127,6 +127,6 @@ internal static class DummyData
             new() { AuctionId = auctions[5].Id, BidderId = 9, Amount = 1250, Timestamp = DateTime.UtcNow },
             new() { AuctionId = auctions[6].Id, BidderId = 10, Amount = 1100, Timestamp = DateTime.UtcNow },
             new() { AuctionId = auctions[6].Id, BidderId = 11, Amount = 1200, Timestamp = DateTime.UtcNow.AddHours(2) },
-        };
+        ];
     }
 }

@@ -7,10 +7,7 @@ internal class Seeder : ISeeder
 {
     private readonly AuctionRDbContext _context;
 
-    public Seeder(AuctionRDbContext context)
-    {
-        _context = context;
-    }
+    public Seeder(AuctionRDbContext context) => _context = context;
 
     public async Task SeedAsync()
     {
