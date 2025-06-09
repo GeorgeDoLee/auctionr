@@ -77,7 +77,7 @@ public class AuctionsController : ControllerBase
 
     [HttpPost]
     [Authorize(Policy = Permissions.AuctionsCreate)]
-    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> AddAuctionAsync(
         [FromBody] CreateAuctionCommand command, CancellationToken ct)
