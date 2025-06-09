@@ -1,0 +1,11 @@
+﻿using AuctionR.Core.Application.Contracts.Dtos;
+using AuctionR.Core.Application.Contracts.Models;
+
+namespace AuctionR.Core.Application.Common.Interfaces;
+
+public interface INotifier
+{
+    Task NotifyBidPlacedAsync(BidModel bidModel);
+
+    Task NotifyAuctionStasrtedAsync(AuctionStartedDto auctionStartedDto);
+}

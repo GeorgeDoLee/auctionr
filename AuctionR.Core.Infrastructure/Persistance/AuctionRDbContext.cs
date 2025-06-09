@@ -33,7 +33,8 @@ internal class AuctionRDbContext : DbContext
         var domainEvents = ChangeTracker.Entries<Entity>()
             .Select(e => e.Entity)
             .Where(e => e.DomainEvents.Any())
-            .SelectMany(e => e.DomainEvents);
+            .SelectMany(e => e.DomainEvents)
+            .ToList();
 
         var result = await base.SaveChangesAsync(ct);
 

@@ -2,4 +2,4 @@
 
 namespace AuctionR.Core.Domain.Events;
 
-public record AuctionStartedEvent(Guid Id, int AuctionId) : DomainEvent(Id);
+public record AuctionStartedEvent(Guid Id, int AuctionId, DateTime StartTime) : DomainEvent(Id);

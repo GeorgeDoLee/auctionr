@@ -49,7 +49,7 @@ public class Auction : Entity
         StartTime = DateTime.UtcNow;
         Status = AuctionStatus.Active;
 
-        Raise(new AuctionStartedEvent(Guid.NewGuid(), Id));
+        Raise(new AuctionStartedEvent(Guid.NewGuid(), Id, StartTime));
     }
 
     public void End()
@@ -106,32 +106,6 @@ public class Auction : Entity
         HighestBidderId = bid.BidderId;
         Bids.Add(bid);
 
-        Raise(new BidPlacedEvent(Guid.NewGuid(), Id, bid.Id));
-    }
-
-    public Bid? RetractBid(Bid bid)
-    {
-        if (!Bids.Contains(bid))
-        {
-            throw new InvalidOperationException("Bid does not belong to this auction.");
-        }
-
-        Bids.Remove(bid);
-
-        if (!Bids.Any())
-        {
-            HighestBidAmount = 0m;
-            HighestBidderId = null;
-
-            return null;
-        }
-
-        var previousHighestBid = Bids.MaxBy(b => b.Amount)!;
-        HighestBidAmount = previousHighestBid.Amount;
-        HighestBidderId = previousHighestBid.BidderId;
-
-        Raise(new BidRetractedEvent(Guid.NewGuid(), Id, bid.Id));
-
-        return previousHighestBid;
+        Raise(BidPlacedEvent.FromBid(bid));
     }
 }

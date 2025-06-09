@@ -1,5 +1,7 @@
 ﻿using AuctionR.Core.API.ExceptionHandling;
+using AuctionR.Core.API.Services;
 using AuctionR.Core.Application.Common.Exceptions;
+using AuctionR.Core.Application.Common.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -22,6 +24,8 @@ public static class WebApplicationBuilderExtensions
         builder.AddRateLimiting();
         builder.AddJwtAuthentication();
         builder.AddAuthorizationWithPolicies();
+
+        builder.Services.AddScoped<INotifier, SignalRNotifier>();
 
         return builder;
     }
