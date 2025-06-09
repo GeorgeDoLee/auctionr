@@ -40,7 +40,7 @@ app.UseHangfireDashboard();
 
 app.MapControllers();
 
-app.MapHub<AuctionHub>("/auction");
+app.MapHub<AuctionHub>("hubs/auctions");
 
 using (var scope = app.Services.CreateScope())
 {
