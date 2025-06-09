@@ -62,7 +62,7 @@ public class Auction : Entity
         EndTime = DateTime.UtcNow;
         Status = AuctionStatus.Ended;
 
-        Raise(new AuctionEndedEvent(Guid.NewGuid(), Id));
+        Raise(new AuctionEndedEvent(Guid.NewGuid(), Id, EndTime));
     }
 
     public void Cancel()

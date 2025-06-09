@@ -20,7 +20,15 @@ internal sealed class SignalRNotifier : INotifier
         _logger = logger;
     }
 
-    public async Task NotifyAuctionStasrtedAsync(AuctionStartedDto auctionStartedDto)
+    public async Task NotifyAuctionEndedAsync(AuctionEndedDto auctionEndedDto)
+    {
+        _logger.LogInformation("Distributing recently ended auction via SignalR.");
+        await _hubContext.Clients
+                .Group($"auction-{auctionEndedDto.AuctionId}")
+                .AuctionEnded(auctionEndedDto);
+    }
+
+    public async Task NotifyAuctionStartedAsync(AuctionStartedDto auctionStartedDto)
     {
         _logger.LogInformation("Distributing newly started auction via SignalR.");
         await _hubContext.Clients

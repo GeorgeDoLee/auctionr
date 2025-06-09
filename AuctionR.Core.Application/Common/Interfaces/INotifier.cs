@@ -7,5 +7,8 @@ public interface INotifier
 {
     Task NotifyBidPlacedAsync(BidModel bidModel);
 
-    Task NotifyAuctionStasrtedAsync(AuctionStartedDto auctionStartedDto);
+    Task NotifyAuctionStartedAsync(AuctionStartedDto auctionStartedDto);
+
+    Task NotifyAuctionEndedAsync(AuctionEndedDto auctionEndedDto);
+
 }
