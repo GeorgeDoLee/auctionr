@@ -7,6 +7,8 @@ public interface IAuctionClient
 {
     Task BidPlaced(BidModel bidModel);
 
+    Task AuctionPostponed(AuctionPostponedDto auctionPostponedDto);
+
     Task AuctionStarted(AuctionStartedDto auctionStartedDto);
 
     Task AuctionEnded(AuctionEndedDto auctionEndedDto);

@@ -20,27 +20,26 @@ internal sealed class SignalRNotifier : INotifier
         _logger = logger;
     }
 
-    public async Task NotifyAuctionEndedAsync(AuctionEndedDto auctionEndedDto)
-    {
-        _logger.LogInformation("Distributing recently ended auction via SignalR.");
-        await _hubContext.Clients
-                .Group($"auction-{auctionEndedDto.AuctionId}")
-                .AuctionEnded(auctionEndedDto);
-    }
+    public Task NotifyAuctionPostponedAsync(AuctionPostponedDto dto) =>
+        NotifyAsync(dto.AuctionId, "postponed auction", client => client.AuctionPostponed(dto));
 
-    public async Task NotifyAuctionStartedAsync(AuctionStartedDto auctionStartedDto)
-    {
-        _logger.LogInformation("Distributing newly started auction via SignalR.");
-        await _hubContext.Clients
-                .Group($"auction-{auctionStartedDto.AuctionId}")
-                .AuctionStarted(auctionStartedDto);
-    }
+    public Task NotifyAuctionEndedAsync(AuctionEndedDto dto) =>
+        NotifyAsync(dto.AuctionId, "recently ended auction", client => client.AuctionEnded(dto));
 
-    public async Task NotifyBidPlacedAsync(BidModel bidModel)
+    public Task NotifyAuctionStartedAsync(AuctionStartedDto dto) =>
+        NotifyAsync(dto.AuctionId, "newly started auction", client => client.AuctionStarted(dto));
+
+    public Task NotifyBidPlacedAsync(BidModel model) =>
+        NotifyAsync(model.AuctionId, "newly placed bid", client => client.BidPlaced(model));
+
+    private async Task NotifyAsync(
+        int auctionId,
+        string actionDescription,
+        Func<IAuctionClient, Task> notifyAction)
     {
-        _logger.LogInformation("Distributing newly placed bid via SignalR.");
-        await _hubContext.Clients
-                .Group($"auction-{bidModel.AuctionId}")
-                .BidPlaced(bidModel);
+        _logger.LogInformation("Distributing {ActionDescription} via SignalR.", actionDescription);
+
+        var group = _hubContext.Clients.Group($"auction-{auctionId}");
+        await notifyAction(group);
     }
 }

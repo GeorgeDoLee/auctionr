@@ -37,6 +37,8 @@ public class Auction : Entity
 
         StartTime = startTime;
         EndTime = endTime;
+
+        Raise(new AuctionPostponedEvent(Guid.NewGuid(), Id, startTime, endTime));
     }
 
     public void Start()
