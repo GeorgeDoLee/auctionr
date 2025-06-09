@@ -9,11 +9,11 @@ namespace AuctionR.Core.API.Services;
 
 internal sealed class SignalRNotifier : INotifier
 {
-    private readonly IHubContext<AuctionHub, IAuctionClient> _hubContext;
+    private readonly IHubContext<AuctionsHub, IAuctionClient> _hubContext;
     private readonly ILogger<SignalRNotifier> _logger;
 
     public SignalRNotifier(
-        IHubContext<AuctionHub, IAuctionClient> hubContext,
+        IHubContext<AuctionsHub, IAuctionClient> hubContext,
         ILogger<SignalRNotifier> logger)
     {
         _hubContext = hubContext;

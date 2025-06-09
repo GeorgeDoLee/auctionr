@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace AuctionR.Core.API.Hubs;
 
-public class AuctionHub : Hub<IAuctionClient>
+public class AuctionsHub : Hub<IAuctionClient>
 {
     public async Task JoinAuction(int auctionId)
     {
