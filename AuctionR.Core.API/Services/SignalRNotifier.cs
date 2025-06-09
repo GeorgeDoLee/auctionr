@@ -24,10 +24,13 @@ internal sealed class SignalRNotifier : INotifier
         NotifyAsync(dto.AuctionId, "postponed auction", client => client.AuctionPostponed(dto));
 
     public Task NotifyAuctionEndedAsync(AuctionEndedDto dto) =>
-        NotifyAsync(dto.AuctionId, "recently ended auction", client => client.AuctionEnded(dto));
+        NotifyAsync(dto.AuctionId, "ended auction", client => client.AuctionEnded(dto));
 
     public Task NotifyAuctionStartedAsync(AuctionStartedDto dto) =>
-        NotifyAsync(dto.AuctionId, "newly started auction", client => client.AuctionStarted(dto));
+        NotifyAsync(dto.AuctionId, "started auction", client => client.AuctionStarted(dto));
+
+    public Task NotifyAuctionCancelledAsync(AuctionCancelledDto dto) =>
+        NotifyAsync(dto.AuctionId, "cancelled auction", client => client.AuctionCancelled(dto));
 
     public Task NotifyBidPlacedAsync(BidModel model) =>
         NotifyAsync(model.AuctionId, "newly placed bid", client => client.BidPlaced(model));

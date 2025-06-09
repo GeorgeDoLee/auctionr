@@ -13,4 +13,5 @@ public interface INotifier
 
     Task NotifyAuctionEndedAsync(AuctionEndedDto auctionEndedDto);
 
+    Task NotifyAuctionCancelledAsync(AuctionCancelledDto auctionCancelledDto);
 }

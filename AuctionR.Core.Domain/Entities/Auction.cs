@@ -75,6 +75,8 @@ public class Auction : Entity
         }
 
         Status = AuctionStatus.Cancelled;
+
+        Raise(new AuctionCancelledEvent(Guid.NewGuid(), Id));
     }
 
     public void PlaceBid(Bid bid)

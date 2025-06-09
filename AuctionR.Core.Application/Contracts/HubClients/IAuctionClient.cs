@@ -13,4 +13,5 @@ public interface IAuctionClient
 
     Task AuctionEnded(AuctionEndedDto auctionEndedDto);
 
+    Task AuctionCancelled(AuctionCancelledDto auctionCancelledDto);
 }
