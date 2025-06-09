@@ -14,8 +14,9 @@ internal class Seeder : ISeeder
 
     public async Task SeedAsync()
     {
-        await SeedEntitiesAsync<Auction>(DummyData.Auctions);
-        await SeedEntitiesAsync<Bid>(DummyData.Bids);
+        var auctions = DummyData.GetAuctions();
+        await SeedEntitiesAsync<Auction>(auctions);
+        await SeedEntitiesAsync<Bid>(DummyData.GetBids(auctions));
     }
 
     private async Task SeedEntitiesAsync<TEntity>(IEnumerable<TEntity> entities) 
