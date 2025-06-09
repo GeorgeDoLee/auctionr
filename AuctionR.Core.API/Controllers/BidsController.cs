@@ -1,6 +1,4 @@
 ﻿using AuctionR.Core.API.Constants;
-using AuctionR.Core.API.Hubs;
-using AuctionR.Core.Application.Contracts.HubClients;
 using AuctionR.Core.Application.Contracts.Models;
 using AuctionR.Core.Application.Features.Bids.Commands.PlaceBid;
 using AuctionR.Core.Application.Features.Bids.Queries.Get;
@@ -10,7 +8,6 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
-using Microsoft.AspNetCore.SignalR;
 
 namespace AuctionR.Core.API.Controllers;
 
@@ -24,14 +21,10 @@ namespace AuctionR.Core.API.Controllers;
 public class BidsController : ControllerBase
 {
     private readonly IMediator _mediator;
-    private readonly IHubContext<AuctionHub, IAuctionClient> _hubContext;
 
-    public BidsController(
-        IMediator mediator, 
-        IHubContext<AuctionHub, IAuctionClient> hubContext)
+    public BidsController(IMediator mediator)
     {
         _mediator = mediator;
-        _hubContext = hubContext;
     }
 
     [HttpGet("{id}")]
