@@ -3,7 +3,7 @@ using FluentValidation;
 
 namespace AuctionR.Core.Application.Features.Auctions.Commands.End;
 
-internal sealed class EndAuctionCommandValidator : AbstractValidator<EndAuctionCommand>
+public sealed class EndAuctionCommandValidator : AbstractValidator<EndAuctionCommand>
 {
     public EndAuctionCommandValidator()
     {

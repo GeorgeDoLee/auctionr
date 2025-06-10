@@ -3,7 +3,7 @@ using FluentValidation;
 
 namespace AuctionR.Core.Application.Features.Bids.Commands.PlaceBid;
 
-internal sealed class PlaceBidCommandValidator : AbstractValidator<PlaceBidCommand>
+public sealed class PlaceBidCommandValidator : AbstractValidator<PlaceBidCommand>
 {
     public PlaceBidCommandValidator()
     {

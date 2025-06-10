@@ -3,7 +3,7 @@ using FluentValidation;
 
 namespace AuctionR.Core.Application.Features.Auctions.Commands.Start;
 
-internal sealed class StartAuctionCommandValidator : AbstractValidator<StartAuctionCommand>
+public sealed class StartAuctionCommandValidator : AbstractValidator<StartAuctionCommand>
 {
     public StartAuctionCommandValidator()
     {

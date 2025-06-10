@@ -3,7 +3,7 @@ using FluentValidation;
 
 namespace AuctionR.Core.Application.Features.Bids.Queries.Get;
 
-internal sealed class GetBidQueryValidator : AbstractValidator<GetBidQuery>
+public sealed class GetBidQueryValidator : AbstractValidator<GetBidQuery>
 {
     public GetBidQueryValidator()
     {

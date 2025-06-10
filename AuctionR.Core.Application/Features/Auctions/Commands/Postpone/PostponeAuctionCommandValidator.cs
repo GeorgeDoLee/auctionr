@@ -3,7 +3,7 @@ using FluentValidation;
 
 namespace AuctionR.Core.Application.Features.Auctions.Commands.Postpone;
 
-internal sealed class PostponeAuctionCommandValidator : AbstractValidator<PostponeAuctionCommand>
+public sealed class PostponeAuctionCommandValidator : AbstractValidator<PostponeAuctionCommand>
 {
     public PostponeAuctionCommandValidator()
     {

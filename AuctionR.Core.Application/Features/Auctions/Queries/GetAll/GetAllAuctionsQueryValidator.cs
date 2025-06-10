@@ -2,7 +2,7 @@
 
 namespace AuctionR.Core.Application.Features.Auctions.Queries.GetAll;
 
-internal sealed class GetAllAuctionsQueryValidator : AbstractValidator<GetAllAuctionsQuery>
+public sealed class GetAllAuctionsQueryValidator : AbstractValidator<GetAllAuctionsQuery>
 {
     public GetAllAuctionsQueryValidator()
     {

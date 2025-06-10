@@ -3,7 +3,7 @@ using FluentValidation;
 
 namespace AuctionR.Core.Application.Features.Auctions.Commands.Cancel;
 
-internal sealed class CancelAuctionCommandVaidator : AbstractValidator<CancelAuctionCommand>
+public sealed class CancelAuctionCommandVaidator : AbstractValidator<CancelAuctionCommand>
 {
     public CancelAuctionCommandVaidator()
     {

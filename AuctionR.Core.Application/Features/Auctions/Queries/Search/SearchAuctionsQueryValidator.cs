@@ -2,7 +2,7 @@
 
 namespace AuctionR.Core.Application.Features.Auctions.Queries.Search;
 
-internal sealed class SearchAuctionsQueryValidator : AbstractValidator<SearchAuctionsQuery>
+public sealed class SearchAuctionsQueryValidator : AbstractValidator<SearchAuctionsQuery>
 {
     public SearchAuctionsQueryValidator()
     {
